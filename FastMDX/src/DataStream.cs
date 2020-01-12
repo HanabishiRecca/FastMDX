@@ -1,0 +1,206 @@
+﻿using System;
+using System.Runtime.InteropServices;
+
+namespace MDXLib {
+    interface IDataRW {
+        internal void ReadFrom(DataStream ds);
+        internal void WriteTo(DataStream ds);
+    }
+
+    unsafe class DataStream : IDisposable {
+        IntPtr _ptr;
+        MemoryBlock memory;
+
+        internal byte* Pointer => (byte*)_ptr;
+        internal uint Offset => (uint)(memory.current - Pointer);
+        internal uint Size => (uint)(memory.end - Pointer);
+
+        internal unsafe DataStream() : this(1024 * 1024) { }
+
+        internal unsafe DataStream(uint size) {
+            _ptr = Marshal.AllocHGlobal((IntPtr)size);
+            memory = new MemoryBlock { current = Pointer, end = Pointer + size };
+        }
+
+        unsafe void Realloc(uint bump) {
+            var offset = memory.current - Pointer;
+            var ensureSize = offset + bump;
+            var size = Size;
+
+            while(size < ensureSize)
+                size *= 2;
+
+            _ptr = Marshal.ReAllocHGlobal(_ptr, (IntPtr)size);
+            memory.current = Pointer + offset;
+            memory.end = Pointer + size;
+        }
+
+        internal void Skip(uint count) {
+            memory.current += count;
+        }
+
+        unsafe void CheckReadBounds(uint count) {
+            if(memory.current + count > memory.end)
+                throw new ParsingException();
+        }
+
+        unsafe void CheckWriteBounds(uint count) {
+            if(memory.current + count > memory.end)
+                Realloc(count);
+        }
+
+        internal unsafe void CheckTag(uint tag) {
+            CheckReadBounds(sizeof(uint));
+            if(*(uint*)memory.current != tag)
+                throw new ParsingException();
+            memory.current += sizeof(uint);
+        }
+
+        internal unsafe void SetValueAt<T>(uint offset, T value) where T : unmanaged {
+            var pos = Pointer + offset;
+            if(pos < Pointer || pos + sizeof(T) > memory.end)
+                throw new ParsingException();
+            *(T*)pos = value;
+        }
+
+        internal unsafe void ReadStruct<T>(ref T dst) where T : unmanaged {
+            CheckReadBounds((uint)sizeof(T));
+            dst = *(T*)memory.current;
+            memory.current += sizeof(T);
+        }
+
+        internal unsafe T ReadStruct<T>() where T : unmanaged {
+            CheckReadBounds((uint)sizeof(T));
+            var dst = *(T*)memory.current;
+            memory.current += sizeof(T);
+            return dst;
+        }
+
+        internal unsafe T[] ReadStructArray<T>() where T : unmanaged {
+            CheckReadBounds(sizeof(uint));
+            var count = *(uint*)memory.current;
+            memory.current += sizeof(uint);
+            return ReadStructArray<T>(count);
+        }
+
+        internal unsafe T[] ReadStructArray<T>(uint count) where T : unmanaged {
+            var byteLen = count * (uint)sizeof(T);
+            CheckReadBounds(byteLen);
+            var arr = new T[count];
+            fixed(void* p = arr)
+                Buffer.MemoryCopy(memory.current, p, byteLen, byteLen);
+            memory.current += byteLen;
+            return arr;
+        }
+
+        internal unsafe void ReadData<T>(ref T dst) where T : struct, IDataRW => dst.ReadFrom(this);
+
+        internal unsafe T[] ReadDataArray<T>() where T : struct, IDataRW {
+            CheckReadBounds(sizeof(uint));
+            var arr = new T[*(uint*)memory.current];
+            memory.current += sizeof(uint);
+            for(int i = 0; i < arr.Length; i++)
+                arr[i].ReadFrom(this);
+            return arr;
+        }
+
+        internal unsafe T[] ReadDataArrayUnknownCount<T>(uint blockSize) where T : struct, IDataRW {
+            var end = memory.current + blockSize;
+            var arr = new T[100];
+            var count = 0;
+            while(memory.current < end) {
+                if(count >= arr.Length) {
+                    var old = arr;
+                    arr = new T[arr.Length * 2];
+                    Array.Copy(old, 0, arr, 0, old.Length);
+                }
+                arr[count].ReadFrom(this);
+                count++;
+            }
+            if(count < arr.Length) {
+                var old = arr;
+                arr = new T[count];
+                Array.Copy(old, 0, arr, 0, arr.Length);
+            }
+            return arr;
+        }
+
+        internal unsafe void WriteStruct<T>(T src) where T : unmanaged {
+            CheckWriteBounds((uint)sizeof(T));
+            *(T*)memory.current = src;
+            memory.current += sizeof(T);
+        }
+
+        internal unsafe void WriteStruct<T>(ref T src) where T : unmanaged {
+            CheckWriteBounds((uint)sizeof(T));
+            *(T*)memory.current = src;
+            memory.current += sizeof(T);
+        }
+
+        internal unsafe void WriteStructArray<T>(T[] src) where T : unmanaged => WriteStructArray(src, true);
+
+        internal unsafe void WriteStructArray<T>(T[] src, bool writeCount) where T : unmanaged {
+            if(src is null)
+                return;
+
+            if(writeCount) {
+                CheckWriteBounds(sizeof(uint));
+                *(uint*)memory.current = (uint)src.Length;
+                memory.current += sizeof(uint);
+            }
+
+            if(src.Length < 1)
+                return;
+
+            var byteLen = (uint)(src.Length * sizeof(T));
+            CheckWriteBounds(byteLen);
+            fixed(void* p = src)
+                Buffer.MemoryCopy(p, memory.current, byteLen, byteLen);
+            memory.current += byteLen;
+        }
+
+        internal unsafe void WriteData<T>(ref T src) where T : struct, IDataRW => src.WriteTo(this);
+
+        internal unsafe void WriteDataArray<T>(T[] src) where T : struct, IDataRW => WriteDataArray(src, true);
+
+        internal unsafe void WriteDataArray<T>(T[] src, bool writeCount) where T : struct, IDataRW {
+            if(src is null)
+                return;
+
+            if(writeCount) {
+                CheckWriteBounds(sizeof(uint));
+                *(uint*)memory.current = (uint)src.Length;
+                memory.current += sizeof(uint);
+            }
+
+            if(src.Length < 1)
+                return;
+
+            for(int i = 0; i < src.Length; i++)
+                src[i].WriteTo(this);
+        }
+
+        #region IDisposable
+        private bool disposed = false;
+
+        public void Dispose() {
+            if(disposed)
+                return;
+
+            Marshal.FreeHGlobal(_ptr);
+            GC.SuppressFinalize(this);
+            disposed = true;
+        }
+
+        ~DataStream() {
+            Dispose();
+        }
+        #endregion
+
+        unsafe struct MemoryBlock {
+            internal byte* current, end;
+        }
+    }
+
+
+}
