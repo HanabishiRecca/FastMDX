@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace FastMDX {
+﻿namespace FastMDX {
     public struct Node : IDataRW {
         byte[] name;
         public uint objectId, parentId, flags;
@@ -11,32 +8,8 @@ namespace FastMDX {
         const uint NAME_LEN = 80;
 
         public string Name {
-            get {
-                if(name is null)
-                    return null;
-
-                var count = name.Length;
-                for(int i = 0; i < name.Length; i++)
-                    if(name[i] == 0) {
-                        count = i;
-                        break;
-                    }
-
-                return Encoding.ASCII.GetString(name, 0, count);
-            }
-            set {
-                if(string.IsNullOrEmpty(value)) {
-                    name = null;
-                    return;
-                }
-
-                if(name is null)
-                    name = new byte[NAME_LEN];
-                else
-                    Array.Clear(name, 0, name.Length);
-
-                Encoding.ASCII.GetBytes(value).CopyTo(name, 0);
-            }
+            get => BinaryString.Decode(name);
+            set => name = BinaryString.Encode(value, NAME_LEN);
         }
 
         void IDataRW.ReadFrom(DataStream ds) {
@@ -67,7 +40,7 @@ namespace FastMDX {
             ds.Skip(sizeof(uint));
 
             if(name is null)
-                throw new NodeNameCantBeEmptyException();
+                throw new NameCantBeEmptyException();
 
             ds.WriteStructArray(name, false);
 

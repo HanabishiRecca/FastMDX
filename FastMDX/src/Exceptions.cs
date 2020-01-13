@@ -5,7 +5,7 @@ namespace FastMDX {
         public override string Message => "Parsing error.";
     }
 
-    class NodeNameCantBeEmptyException : Exception {
-        public override string Message => "Node name can't be empty.";
+    class NameCantBeEmptyException : Exception {
+        public override string Message => "Name can't be empty.";
     }
 }
