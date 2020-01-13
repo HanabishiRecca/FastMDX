@@ -3,18 +3,23 @@ using System.Text;
 
 namespace FastMDX {
     static class BinaryString {
-        internal static string Decode(byte[] value) {
-            if(value is null)
+        internal static string Decode(byte[] bytes) {
+            if(bytes is null)
                 return null;
 
-            var index = Array.IndexOf(value, (byte)0);
-            index = (index > -1) ? Math.Min(value.Length, index) : value.Length;
-            return Encoding.ASCII.GetString(value, 0, index);
+            var index = Array.IndexOf(bytes, (byte)0);
+            index = (index > -1) ? Math.Min(bytes.Length, index) : bytes.Length;
+            return Encoding.ASCII.GetString(bytes, 0, index);
         }
 
-        internal static byte[] Encode(string value, uint len) =>
-            (value?.Length > 0) ?
-            Encoding.ASCII.GetBytes(value, 0, Math.Min(value.Length, (int)len)) :
-            new byte[len];
+        internal static void Encode(string str, ref byte[] bytes, uint defLen) {
+            if(bytes is null)
+                bytes = new byte[defLen];
+            else
+                Array.Clear(bytes, 0, bytes.Length);
+
+            if(str?.Length > 0)
+                Encoding.ASCII.GetBytes(str, 0, Math.Min(str.Length, bytes.Length), bytes, 0);
+        }
     }
 }

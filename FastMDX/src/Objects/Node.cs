@@ -9,7 +9,7 @@
 
         public string Name {
             get => BinaryString.Decode(name);
-            set => name = BinaryString.Encode(value, NAME_LEN);
+            set => BinaryString.Encode(value, ref name, NAME_LEN);
         }
 
         void IDataRW.ReadFrom(DataStream ds) {
