@@ -3,23 +3,29 @@ using System.Text;
 
 namespace FastMDX {
     static class BinaryString {
-        internal static string Decode(byte[] bytes) {
-            if(bytes is null)
-                return null;
-
-            var index = Array.IndexOf(bytes, (byte)0);
-            index = (index > -1) ? Math.Min(bytes.Length, index) : bytes.Length;
-            return Encoding.ASCII.GetString(bytes, 0, index);
+        internal unsafe static string Decode(byte* bytes, uint len) {
+            for(int i = 0; i < len; i++)
+                if(bytes[i] == 0)
+                    return Encoding.ASCII.GetString(bytes, i);
+            
+            return Encoding.ASCII.GetString(bytes, (int)len);
         }
 
-        internal static void Encode(string str, ref byte[] bytes, uint defLen) {
-            if(bytes is null)
-                bytes = new byte[defLen];
-            else
-                Array.Clear(bytes, 0, bytes.Length);
+        internal unsafe static void Encode(string str, byte* bytes, uint len) {
+            var lp = (long*)bytes;
+            var lc = len / sizeof(long);
 
-            if(str?.Length > 0)
-                Encoding.ASCII.GetBytes(str, 0, Math.Min(str.Length, bytes.Length), bytes, 0);
+            for(uint i = 0; i < lc; i++)
+                lp[i] = 0L;
+
+            for(uint i = lc * sizeof(long); i < len; i++)
+                bytes[i] = 0;
+
+            if(str?.Length > 0) {
+                var count = Math.Min(str.Length, (int)len);
+                fixed(char* c = str)
+                    Encoding.ASCII.GetBytes(c, count, bytes, count);
+            }
         }
     }
 }

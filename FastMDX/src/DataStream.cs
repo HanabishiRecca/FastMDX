@@ -95,6 +95,13 @@ namespace FastMDX {
             return arr;
         }
 
+        internal unsafe void ReadUnmanagedArray<T>(T* dst, uint count) where T : unmanaged {
+            var byteLen = count * (uint)sizeof(T);
+            CheckReadBounds(byteLen);
+            Buffer.MemoryCopy(memory.current, dst, byteLen, byteLen);
+            memory.current += byteLen;
+        }
+
         internal unsafe void ReadData<T>(ref T dst) where T : struct, IDataRW => dst.ReadFrom(this);
 
         internal unsafe T[] ReadDataArray<T>() where T : struct, IDataRW {
@@ -156,6 +163,13 @@ namespace FastMDX {
             CheckWriteBounds(byteLen);
             fixed(void* p = src)
                 Buffer.MemoryCopy(p, memory.current, byteLen, byteLen);
+            memory.current += byteLen;
+        }
+
+        internal unsafe void WriteUnmanagedArray<T>(T* src, uint count) where T : unmanaged {
+            var byteLen = count * (uint)sizeof(T);
+            CheckWriteBounds(byteLen);
+            Buffer.MemoryCopy(src, memory.current, byteLen, byteLen);
             memory.current += byteLen;
         }
 
