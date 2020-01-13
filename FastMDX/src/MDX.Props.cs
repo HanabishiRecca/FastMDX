@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace FastMDX {
     public partial class MDX {
+        public ModelInfo Info;
         public Bone[] Bones;
         public Geoset[] Geosets;
 
         static Dictionary<uint, IBlockParser> _knownParsers = new Dictionary<uint, IBlockParser> {
+            [(uint)KnownBlocks.MODL] = new ModelInfoParser(),
             [(uint)KnownBlocks.GEOS] = new GeosetsParser(),
             [(uint)KnownBlocks.BONE] = new BonesParser(),
         };
     }
 
     interface IBlockParser {
-        public void ReadFrom(MDX mdx, DataStream dm, uint blockSize);
-        public void WriteTo(MDX mdx, DataStream dm);
+        public void ReadFrom(MDX mdx, DataStream ds, uint blockSize);
+        public void WriteTo(MDX mdx, DataStream ds);
         public bool HasData(MDX mdx);
     }
 
