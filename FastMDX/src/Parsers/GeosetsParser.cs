@@ -1,4 +1,4 @@
-﻿namespace MDXLib {
+﻿namespace FastMDX {
     class GeosetsParser : IBlockParser {
         public void ReadFrom(MDX mdx, DataStream ds, uint blockSize) {
             mdx.Geosets = ds.ReadDataArrayUnknownCount<Geoset>(blockSize);

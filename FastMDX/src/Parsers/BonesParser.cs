@@ -1,4 +1,4 @@
-﻿namespace MDXLib {
+﻿namespace FastMDX {
     class BonesParser : IBlockParser {
         public void ReadFrom(MDX mdx, DataStream ds, uint blockSize) {
             mdx.Bones = ds.ReadDataArrayUnknownCount<Bone>(blockSize);

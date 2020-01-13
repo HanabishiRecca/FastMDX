@@ -1,4 +1,4 @@
-﻿namespace MDXLib {
+﻿namespace FastMDX {
     public struct Transform<T> : IDataRW where T : unmanaged {
         public uint interpolationType;
         public int globalSequenceId;

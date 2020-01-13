@@ -1,4 +1,4 @@
-﻿namespace MDXLib {
+﻿namespace FastMDX {
     public struct Bone : IDataRW {
         public Node node;
         public uint geosetId, geosetAnimationId;

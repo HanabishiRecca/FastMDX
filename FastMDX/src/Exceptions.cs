@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MDXLib {
+namespace FastMDX {
     class ParsingException : Exception {
         public override string Message => "Parsing error.";
     }

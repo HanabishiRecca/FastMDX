@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace MDXLib {
+namespace FastMDX {
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Vec2 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace MDXLib {
+namespace FastMDX {
     public partial class MDX {
         public MDX() { }
 

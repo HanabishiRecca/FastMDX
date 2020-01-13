@@ -1,4 +1,4 @@
-﻿namespace MDXLib {
+﻿namespace FastMDX {
     public struct Geoset : IDataRW {
         public Vec3[] vertexPositions, vertexNormals;
         public uint[] faceTypeGroups, faceGroups, matrixGroups, matrixIndices;

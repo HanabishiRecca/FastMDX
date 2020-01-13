@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using MDXLib;
+using FastMDX;
 
 static class Program {
 

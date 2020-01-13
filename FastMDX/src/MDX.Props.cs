@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MDXLib {
+namespace FastMDX {
     public partial class MDX {
         public Bone[] Bones;
         public Geoset[] Geosets;

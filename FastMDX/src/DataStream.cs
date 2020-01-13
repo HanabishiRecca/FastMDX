@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace MDXLib {
+namespace FastMDX {
     interface IDataRW {
         internal void ReadFrom(DataStream ds);
         internal void WriteTo(DataStream ds);

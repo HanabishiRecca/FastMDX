@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace MDXLib {
+namespace FastMDX {
     static class FileApi {
         static readonly bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 

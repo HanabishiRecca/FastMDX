@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace MDXLib {
+namespace FastMDX {
     public struct Node : IDataRW {
         byte[] name;
         public uint objectId, parentId, flags;

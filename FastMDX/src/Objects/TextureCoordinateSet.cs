@@ -1,4 +1,4 @@
-﻿namespace MDXLib {
+﻿namespace FastMDX {
     public struct TextureCoordinateSet : IDataRW {
         public Vec2[] textureCoordinates;
 
