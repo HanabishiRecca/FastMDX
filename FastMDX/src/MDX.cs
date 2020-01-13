@@ -66,8 +66,18 @@ namespace MDXLib {
 
             ds.WriteStruct(ref mdxHeader);
 
-            foreach(var parser in _knownParsers)
-                parser.Value.WriteTo(this, ds, parser.Key);
+            foreach(var parser in _knownParsers) {
+                if(parser.Value.HasData(this)) {
+                    ds.WriteStruct(parser.Key);
+
+                    var offset = ds.Offset;
+                    ds.Skip(sizeof(uint));
+
+                    parser.Value.WriteTo(this, ds);
+
+                    ds.SetValueAt(offset, ds.Offset - (offset + sizeof(uint)));
+                }
+            }
 
             if(UnknownBlocks?.Length > 0)
                 foreach(var block in UnknownBlocks)

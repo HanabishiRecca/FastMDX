@@ -4,17 +4,10 @@
             mdx.Geosets = ds.ReadDataArrayUnknownCount<Geoset>(blockSize);
         }
 
-        public void WriteTo(MDX mdx, DataStream ds, uint tag) {
-            if(mdx.Geosets?.Length < 1)
-                return;
-
-            ds.WriteStruct(tag);
-
-            var offset = ds.Offset;
-            ds.Skip(sizeof(uint));
-
+        public void WriteTo(MDX mdx, DataStream ds) {
             ds.WriteDataArray(mdx.Geosets, false);
-            ds.SetValueAt(offset, ds.Offset - (offset + sizeof(uint)));
         }
+
+        public bool HasData(MDX mdx) => mdx?.Geosets?.Length > 0;
     }
 }

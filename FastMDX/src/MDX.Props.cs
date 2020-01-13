@@ -14,7 +14,8 @@ namespace MDXLib {
 
     interface IBlockParser {
         public void ReadFrom(MDX mdx, DataStream dm, uint blockSize);
-        public void WriteTo(MDX mdx, DataStream dm, uint tag);
+        public void WriteTo(MDX mdx, DataStream dm);
+        public bool HasData(MDX mdx);
     }
 
     enum KnownBlocks : uint {
