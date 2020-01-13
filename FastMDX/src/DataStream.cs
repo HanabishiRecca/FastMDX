@@ -19,6 +19,7 @@ namespace MDXLib {
 
         internal unsafe DataStream(uint size) {
             _ptr = Marshal.AllocHGlobal((IntPtr)size);
+            GC.AddMemoryPressure(size);
             memory = new MemoryBlock { current = Pointer, end = Pointer + size };
         }
 
@@ -31,6 +32,7 @@ namespace MDXLib {
                 size *= 2;
 
             _ptr = Marshal.ReAllocHGlobal(_ptr, (IntPtr)size);
+            GC.AddMemoryPressure(size - Size);
             memory.current = Pointer + offset;
             memory.end = Pointer + size;
         }
@@ -137,9 +139,7 @@ namespace MDXLib {
             memory.current += sizeof(T);
         }
 
-        internal unsafe void WriteStructArray<T>(T[] src) where T : unmanaged => WriteStructArray(src, true);
-
-        internal unsafe void WriteStructArray<T>(T[] src, bool writeCount) where T : unmanaged {
+        internal unsafe void WriteStructArray<T>(T[] src, bool writeCount = true) where T : unmanaged {
             if(src is null)
                 return;
 
@@ -161,9 +161,7 @@ namespace MDXLib {
 
         internal unsafe void WriteData<T>(ref T src) where T : struct, IDataRW => src.WriteTo(this);
 
-        internal unsafe void WriteDataArray<T>(T[] src) where T : struct, IDataRW => WriteDataArray(src, true);
-
-        internal unsafe void WriteDataArray<T>(T[] src, bool writeCount) where T : struct, IDataRW {
+        internal unsafe void WriteDataArray<T>(T[] src, bool writeCount = true) where T : struct, IDataRW {
             if(src is null)
                 return;
 
@@ -188,6 +186,7 @@ namespace MDXLib {
                 return;
 
             Marshal.FreeHGlobal(_ptr);
+            GC.RemoveMemoryPressure(Size);
             GC.SuppressFinalize(this);
             disposed = true;
         }
