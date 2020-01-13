@@ -12,11 +12,7 @@ static class Program {
 
     static void Main(string[] args) {
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-        Run(args);
-        Console.ReadKey(true);
-    }
 
-    static void Run(string[] args) {
         if(!(args?.Length > 0))
             return;
 
@@ -24,11 +20,19 @@ static class Program {
         if(!File.Exists(path))
             return;
 
+        Run(path);
+    }
+
+    static void Run(string path) {
         // Parsing test + JIT warm up
         var mdx = new MDX(path);
         mdx.SaveToFile(Path.ChangeExtension(path, "new.mdx"));
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
 
         // Performance test
+
+        Console.WriteLine($"CPU HPET: {(Stopwatch.IsHighResolution ? "yes" : "no (benchmark results may be inaccurate)")}");
+
         var N = 100;
         var St = 0L;
         var maxTime = 0L;
@@ -56,7 +60,8 @@ static class Program {
 
         var time = mdx.ParsingTime;
 
-        GC.Collect(2, GCCollectionMode.Forced, true, true);
+        // Force GC to avoid impact during the measurement interval
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
 
         return time;
     }
