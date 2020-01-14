@@ -6,6 +6,8 @@
     <StartupObject></StartupObject>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+    <Product>FastMDX - WarCraft 3 MDX processing library</Product>
+    <Copyright>Hanabishi</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
