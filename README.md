@@ -16,5 +16,6 @@ For now only able to modify:
 - Geosets
 - Geoset animations
 - Bones
+- Lights
 
 Other blocks will be saved untouched.

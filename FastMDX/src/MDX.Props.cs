@@ -11,6 +11,7 @@ namespace FastMDX {
         public Geoset[] Geosets;
         public GeosetAnimation[] GeosetAnimations;
         public Bone[] Bones;
+        public Light[] Lights;
 
         static Dictionary<uint, IBlockParser> _knownParsers = new Dictionary<uint, IBlockParser> {
             [(uint)KnownBlocks.MODL] = new ModelInfoParser(),
@@ -21,6 +22,7 @@ namespace FastMDX {
             [(uint)KnownBlocks.GEOS] = new GeosetsParser(),
             [(uint)KnownBlocks.GEOA] = new GeosetAnimationsParser(),
             [(uint)KnownBlocks.BONE] = new BonesParser(),
+            [(uint)KnownBlocks.LITE] = new LightsParser(),
         };
     }
 
