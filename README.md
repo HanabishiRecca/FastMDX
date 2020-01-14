@@ -21,5 +21,6 @@ For now only able to modify:
 - Helpers
 - Attachments
 - Particle emitters
+- Ribbon emitters
 
 Other blocks will be saved untouched.
