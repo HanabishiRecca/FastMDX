@@ -20,5 +20,6 @@ For now only able to modify:
 - Lights
 - Helpers
 - Attachments
+- Particle emitters
 
 Other blocks will be saved untouched.
