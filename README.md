@@ -12,6 +12,7 @@ For now only able to modify:
 - Global sequences
 - Textures
 - Materials
+- Texture animations
 - Bones
 - Geosets
 

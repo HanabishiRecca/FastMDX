@@ -7,6 +7,7 @@ namespace FastMDX {
         public GlobalSequence[] GlobalSequences;
         public Texture[] Textures;
         public Material[] Materials;
+        public TextureAnimation[] TextureAnimations;
         public Bone[] Bones;
         public Geoset[] Geosets;
 
