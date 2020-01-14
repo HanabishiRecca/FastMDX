@@ -22,5 +22,6 @@ For now only able to modify:
 - Attachments
 - Particle emitters
 - Ribbon emitters
+- Event objects
 
 Other blocks will be saved untouched.
