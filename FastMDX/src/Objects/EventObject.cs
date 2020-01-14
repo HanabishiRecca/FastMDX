@@ -19,7 +19,7 @@
             ds.WriteStruct(KEVT_HEADER);
             ds.WriteStruct((uint)tracks.Length);
             ds.WriteStruct(globalSequenceId);
-            ds.WriteStructArray(tracks);
+            ds.WriteStructArray(tracks, false);
         }
     }
 }
