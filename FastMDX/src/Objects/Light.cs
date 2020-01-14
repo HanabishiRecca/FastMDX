@@ -46,7 +46,7 @@
             var offset = ds.Offset;
             ds.Skip(sizeof(uint));
 
-            ds.ReadData(ref node);
+            ds.WriteData(ref node);
 
             ds.WriteStruct(type);
             ds.WriteStruct(attenuationStart);
