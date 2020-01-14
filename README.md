@@ -23,5 +23,6 @@ For now only able to modify:
 - Particle emitters
 - Ribbon emitters
 - Event objects
+- Cameras
 
 Other blocks will be saved untouched.

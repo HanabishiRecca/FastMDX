@@ -19,6 +19,7 @@ namespace FastMDX {
         public ParticleEmitter2[] ParticleEmitters2;
         public RibbonEmitter[] RibbonEmitters;
         public EventObject[] EventObjects;
+        public Camera[] Cameras;
 
         static Dictionary<uint, IBlockParser> _knownParsers = new Dictionary<uint, IBlockParser> {
             [(uint)KnownBlocks.MODL] = new ModelInfoParser(),
@@ -37,6 +38,7 @@ namespace FastMDX {
             [(uint)KnownBlocks.PRE2] = new ParticleEmitters2Parser(),
             [(uint)KnownBlocks.RIBB] = new RibbonEmittersParser(),
             [(uint)KnownBlocks.EVTS] = new EventObjectsParser(),
+            [(uint)KnownBlocks.CAMS] = new CamerasParser(),
         };
     }
 
