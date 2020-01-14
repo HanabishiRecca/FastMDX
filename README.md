@@ -10,6 +10,7 @@ For now only able to modify:
 - Model info
 - Sequences
 - Global sequences
+- Textures
 - Bones
 - Geosets
 

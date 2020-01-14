@@ -5,6 +5,7 @@ namespace FastMDX {
         public ModelInfo Info;
         public Sequence[] Sequences;
         public GlobalSequence[] GlobalSequences;
+        public Texture[] Textures;
         public Bone[] Bones;
         public Geoset[] Geosets;
 
@@ -12,6 +13,7 @@ namespace FastMDX {
             [(uint)KnownBlocks.MODL] = new ModelInfoParser(),
             [(uint)KnownBlocks.SEQS] = new SequencesParser(),
             [(uint)KnownBlocks.GLBS] = new GlobalSequencesParser(),
+            [(uint)KnownBlocks.TEXS] = new TexturesParser(),
             [(uint)KnownBlocks.GEOS] = new GeosetsParser(),
             [(uint)KnownBlocks.BONE] = new BonesParser(),
         };
