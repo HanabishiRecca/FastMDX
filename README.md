@@ -8,6 +8,8 @@ Written in **C#** via low-level unsafe code. Based on **.NET Core 3.1**. Library
 
 For now only able to modify:
 - Model info
+- Sequences
+- Global sequences
 - Bones
 - Geosets
 

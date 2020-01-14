@@ -24,6 +24,11 @@ namespace FastMDX {
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct GlobalSequence {
+        public uint duration;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Track<T> where T : unmanaged {
         public int frame;
         public T tr;

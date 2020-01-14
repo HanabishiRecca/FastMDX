@@ -4,12 +4,14 @@ namespace FastMDX {
     public partial class MDX {
         public ModelInfo Info;
         public Sequence[] Sequences;
+        public GlobalSequence[] GlobalSequences;
         public Bone[] Bones;
         public Geoset[] Geosets;
 
         static Dictionary<uint, IBlockParser> _knownParsers = new Dictionary<uint, IBlockParser> {
             [(uint)KnownBlocks.MODL] = new ModelInfoParser(),
             [(uint)KnownBlocks.SEQS] = new SequencesParser(),
+            [(uint)KnownBlocks.GLBS] = new GlobalSequencesParser(),
             [(uint)KnownBlocks.GEOS] = new GeosetsParser(),
             [(uint)KnownBlocks.BONE] = new BonesParser(),
         };
