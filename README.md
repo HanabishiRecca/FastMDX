@@ -13,7 +13,8 @@ For now only able to modify:
 - Textures
 - Materials
 - Texture animations
-- Bones
 - Geosets
+- Geoset animations
+- Bones
 
 Other blocks will be saved untouched.

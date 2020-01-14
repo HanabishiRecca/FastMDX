@@ -18,6 +18,11 @@ namespace FastMDX {
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct Color {
+        public float b, g, r;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Extent {
         public float boundsRadius;
         public Vec3 minimum, maximum;

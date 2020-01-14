@@ -44,5 +44,7 @@
         KTAT = 0x5441544Bu,
         KTAR = 0x5241544Bu,
         KTAS = 0x5341544Bu,
+        KGAO = 0x4F41474Bu,
+        KGAC = 0x4341474Bu,
     }
 }
