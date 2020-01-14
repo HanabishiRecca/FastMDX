@@ -39,5 +39,7 @@
         KGTR = 0x5254474Bu,
         KGRT = 0x5452474Bu,
         KGSC = 0x4353474Bu,
+        KMTF = 0x46544D4Bu,
+        KMTA = 0x41544D4Bu,
     }
 }
