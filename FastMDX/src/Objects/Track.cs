@@ -34,17 +34,4 @@
 
         internal bool HasData => (interpolationType > 1) ? (tracksInter?.Length > 0) : (tracks?.Length > 0);
     }
-
-    enum TransformTags : uint {
-        KGTR = 0x5254474Bu,
-        KGRT = 0x5452474Bu,
-        KGSC = 0x4353474Bu,
-        KMTF = 0x46544D4Bu,
-        KMTA = 0x41544D4Bu,
-        KTAT = 0x5441544Bu,
-        KTAR = 0x5241544Bu,
-        KTAS = 0x5341544Bu,
-        KGAO = 0x4F41474Bu,
-        KGAC = 0x4341474Bu,
-    }
 }

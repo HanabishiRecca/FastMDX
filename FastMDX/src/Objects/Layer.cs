@@ -17,9 +17,9 @@
 
             while(ds.Offset < end) {
                 var tag = ds.ReadStruct<uint>();
-                if(tag == (uint)TransformTags.KMTF) {
+                if(tag == (uint)Tags.KMTF) {
                     ds.ReadData(ref materialTextureId);
-                } else if(tag == (uint)TransformTags.KMTA) {
+                } else if(tag == (uint)Tags.KMTA) {
                     ds.ReadData(ref materialAlpha);
                 } else {
                     throw new ParsingException();
@@ -39,16 +39,21 @@
             ds.WriteStruct(alpha);
 
             if(materialTextureId.HasData) {
-                ds.WriteStruct(TransformTags.KMTF);
+                ds.WriteStruct(Tags.KMTF);
                 ds.WriteData(ref materialTextureId);
             }
 
             if(materialAlpha.HasData) {
-                ds.WriteStruct(TransformTags.KMTA);
+                ds.WriteStruct(Tags.KMTA);
                 ds.WriteData(ref materialAlpha);
             }
 
             ds.SetValueAt(offset, ds.Offset - offset);
+        }
+
+        enum Tags : uint {
+            KMTF = 0x46544D4Bu,
+            KMTA = 0x41544D4Bu,
         }
     }
 }

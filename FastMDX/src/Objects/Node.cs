@@ -30,11 +30,11 @@
 
             while(ds.Offset < end) {
                 var tag = ds.ReadStruct<uint>();
-                if(tag == (uint)TransformTags.KGTR) {
+                if(tag == (uint)Tags.KGTR) {
                     ds.ReadData(ref translation);
-                } else if(tag == (uint)TransformTags.KGRT) {
+                } else if(tag == (uint)Tags.KGRT) {
                     ds.ReadData(ref rotation);
-                } else if(tag == (uint)TransformTags.KGSC) {
+                } else if(tag == (uint)Tags.KGSC) {
                     ds.ReadData(ref scaling);
                 } else {
                     throw new ParsingException();
@@ -54,21 +54,27 @@
             ds.WriteStruct(flags);
 
             if(translation.HasData) {
-                ds.WriteStruct(TransformTags.KGTR);
+                ds.WriteStruct(Tags.KGTR);
                 ds.WriteData(ref translation);
             }
 
             if(rotation.HasData) {
-                ds.WriteStruct(TransformTags.KGRT);
+                ds.WriteStruct(Tags.KGRT);
                 ds.WriteData(ref rotation);
             }
 
             if(scaling.HasData) {
-                ds.WriteStruct(TransformTags.KGSC);
+                ds.WriteStruct(Tags.KGSC);
                 ds.WriteData(ref scaling);
             }
 
             ds.SetValueAt(offset, ds.Offset - offset);
+        }
+
+        enum Tags : uint {
+            KGTR = 0x5254474Bu,
+            KGRT = 0x5452474Bu,
+            KGSC = 0x4353474Bu,
         }
     }
 }

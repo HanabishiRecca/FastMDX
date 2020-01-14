@@ -16,9 +16,9 @@
 
             while(ds.Offset < end) {
                 var tag = ds.ReadStruct<uint>();
-                if(tag == (uint)TransformTags.KGAO) {
+                if(tag == (uint)Tags.KGAO) {
                     ds.ReadData(ref geosetAlpha);
-                } else if(tag == (uint)TransformTags.KGAC) {
+                } else if(tag == (uint)Tags.KGAC) {
                     ds.ReadData(ref geosetColor);
                 } else {
                     throw new ParsingException();
@@ -36,16 +36,21 @@
             ds.WriteStruct(geosetId);
 
             if(geosetAlpha.HasData) {
-                ds.WriteStruct(TransformTags.KGAO);
+                ds.WriteStruct(Tags.KGAO);
                 ds.WriteData(ref geosetAlpha);
             }
 
             if(geosetColor.HasData) {
-                ds.WriteStruct(TransformTags.KGAC);
+                ds.WriteStruct(Tags.KGAC);
                 ds.WriteData(ref geosetColor);
             }
 
             ds.SetValueAt(offset, ds.Offset - offset);
+        }
+
+        enum Tags : uint {
+            KGAO = 0x4F41474Bu,
+            KGAC = 0x4341474Bu,
         }
     }
 }
