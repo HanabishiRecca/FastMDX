@@ -11,6 +11,7 @@ For now only able to modify:
 - Sequences
 - Global sequences
 - Textures
+- Pivots
 - Materials
 - Texture animations
 - Geosets

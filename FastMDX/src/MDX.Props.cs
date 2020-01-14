@@ -6,6 +6,7 @@ namespace FastMDX {
         public Sequence[] Sequences;
         public GlobalSequence[] GlobalSequences;
         public Texture[] Textures;
+        public Vec3[] Pivots;
         public Material[] Materials;
         public TextureAnimation[] TextureAnimations;
         public Geoset[] Geosets;
@@ -20,6 +21,7 @@ namespace FastMDX {
             [(uint)KnownBlocks.SEQS] = new SequencesParser(),
             [(uint)KnownBlocks.GLBS] = new GlobalSequencesParser(),
             [(uint)KnownBlocks.TEXS] = new TexturesParser(),
+            [(uint)KnownBlocks.PIVT] = new PivotsParser(),
             [(uint)KnownBlocks.MTLS] = new MaterialsParser(),
             [(uint)KnownBlocks.GEOS] = new GeosetsParser(),
             [(uint)KnownBlocks.GEOA] = new GeosetAnimationsParser(),
