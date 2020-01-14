@@ -18,5 +18,6 @@ For now only able to modify:
 - Bones
 - Lights
 - Helpers
+- Attachments
 
 Other blocks will be saved untouched.

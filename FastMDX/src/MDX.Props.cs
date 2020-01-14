@@ -13,6 +13,7 @@ namespace FastMDX {
         public Bone[] Bones;
         public Light[] Lights;
         public Helper[] Helpers;
+        public Attachment[] Attachments;
 
         static Dictionary<uint, IBlockParser> _knownParsers = new Dictionary<uint, IBlockParser> {
             [(uint)KnownBlocks.MODL] = new ModelInfoParser(),
@@ -25,6 +26,7 @@ namespace FastMDX {
             [(uint)KnownBlocks.BONE] = new BonesParser(),
             [(uint)KnownBlocks.LITE] = new LightsParser(),
             [(uint)KnownBlocks.HELP] = new HelpersParser(),
+            [(uint)KnownBlocks.ATCH] = new AttachmentsParser(),
         };
     }
 
