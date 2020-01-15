@@ -5,9 +5,8 @@ namespace FastMDX {
         public ModelInfo Info;
         public Sequence[] Sequences;
         public GlobalSequence[] GlobalSequences;
-        public Texture[] Textures;
-        public Vec3[] Pivots;
         public Material[] Materials;
+        public Texture[] Textures;
         public TextureAnimation[] TextureAnimations;
         public Geoset[] Geosets;
         public GeosetAnimation[] GeosetAnimations;
@@ -15,6 +14,7 @@ namespace FastMDX {
         public Light[] Lights;
         public Helper[] Helpers;
         public Attachment[] Attachments;
+        public Vec3[] Pivots;
         public ParticleEmitter[] ParticleEmitters;
         public ParticleEmitter2[] ParticleEmitters2;
         public RibbonEmitter[] RibbonEmitters;
@@ -22,26 +22,26 @@ namespace FastMDX {
         public Camera[] Cameras;
         public CollisionShape[] CollisionShapes;
 
-        static Dictionary<uint, IBlockParser> _knownParsers = new Dictionary<uint, IBlockParser> {
-            [(uint)KnownBlocks.MODL] = new ModelInfoParser(),
-            [(uint)KnownBlocks.SEQS] = new SequencesParser(),
-            [(uint)KnownBlocks.GLBS] = new GlobalSequencesParser(),
-            [(uint)KnownBlocks.MTLS] = new MaterialsParser(),
-            [(uint)KnownBlocks.TEXS] = new TexturesParser(),
-            [(uint)KnownBlocks.TXAN] = new TextureAnimationsParser(),
-            [(uint)KnownBlocks.GEOS] = new GeosetsParser(),
-            [(uint)KnownBlocks.GEOA] = new GeosetAnimationsParser(),
-            [(uint)KnownBlocks.BONE] = new BonesParser(),
-            [(uint)KnownBlocks.LITE] = new LightsParser(),
-            [(uint)KnownBlocks.HELP] = new HelpersParser(),
-            [(uint)KnownBlocks.ATCH] = new AttachmentsParser(),
-            [(uint)KnownBlocks.PIVT] = new PivotsParser(),
-            [(uint)KnownBlocks.PREM] = new ParticleEmittersParser(),
-            [(uint)KnownBlocks.PRE2] = new ParticleEmitters2Parser(),
-            [(uint)KnownBlocks.RIBB] = new RibbonEmittersParser(),
-            [(uint)KnownBlocks.EVTS] = new EventObjectsParser(),
-            [(uint)KnownBlocks.CAMS] = new CamerasParser(),
-            [(uint)KnownBlocks.CLID] = new CollisionShapesParser(),
+        static readonly Dictionary<uint, IBlockParser> _knownParsers = new Dictionary<uint, IBlockParser> {
+            [(uint)KnownBlocks.MODL] = new StructParser<ModelInfo>(mdx => ref mdx.Info),
+            [(uint)KnownBlocks.SEQS] = new StructArrayParser<Sequence>(mdx => ref mdx.Sequences),
+            [(uint)KnownBlocks.GLBS] = new StructArrayParser<GlobalSequence>(mdx => ref mdx.GlobalSequences),
+            [(uint)KnownBlocks.MTLS] = new DataArrayParser<Material>(mdx => ref mdx.Materials),
+            [(uint)KnownBlocks.TEXS] = new StructArrayParser<Texture>(mdx => ref mdx.Textures),
+            [(uint)KnownBlocks.TXAN] = new DataArrayParser<TextureAnimation>(mdx => ref mdx.TextureAnimations),
+            [(uint)KnownBlocks.GEOS] = new DataArrayParser<Geoset>(mdx => ref mdx.Geosets),
+            [(uint)KnownBlocks.GEOA] = new DataArrayParser<GeosetAnimation>(mdx => ref mdx.GeosetAnimations),
+            [(uint)KnownBlocks.BONE] = new DataArrayParser<Bone>(mdx => ref mdx.Bones),
+            [(uint)KnownBlocks.LITE] = new DataArrayParser<Light>(mdx => ref mdx.Lights),
+            [(uint)KnownBlocks.HELP] = new DataArrayParser<Helper>(mdx => ref mdx.Helpers),
+            [(uint)KnownBlocks.ATCH] = new DataArrayParser<Attachment>(mdx => ref mdx.Attachments),
+            [(uint)KnownBlocks.PIVT] = new StructArrayParser<Vec3>(mdx => ref mdx.Pivots),
+            [(uint)KnownBlocks.PREM] = new DataArrayParser<ParticleEmitter>(mdx => ref mdx.ParticleEmitters),
+            [(uint)KnownBlocks.PRE2] = new DataArrayParser<ParticleEmitter2>(mdx => ref mdx.ParticleEmitters2),
+            [(uint)KnownBlocks.RIBB] = new DataArrayParser<RibbonEmitter>(mdx => ref mdx.RibbonEmitters),
+            [(uint)KnownBlocks.EVTS] = new DataArrayParser<EventObject>(mdx => ref mdx.EventObjects),
+            [(uint)KnownBlocks.CAMS] = new DataArrayParser<Camera>(mdx => ref mdx.Cameras),
+            [(uint)KnownBlocks.CLID] = new DataArrayParser<CollisionShape>(mdx => ref mdx.CollisionShapes),
         };
     }
 
