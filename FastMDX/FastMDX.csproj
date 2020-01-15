@@ -8,6 +8,7 @@
     <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
     <Product>FastMDX - WarCraft 3 MDX processing library</Product>
     <Copyright>Hanabishi</Copyright>
+    <Version>0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
