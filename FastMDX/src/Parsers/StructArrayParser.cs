@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FastMDX {
     class StructArrayParser<T> : IBlockParser where T : unmanaged {
@@ -11,6 +11,9 @@ namespace FastMDX {
         }
 
         public unsafe void ReadFrom(MDX mdx, DataStream ds, uint blockSize) {
+            if((blockSize % sizeof(T)) > 0)
+                throw new ParsingException();
+
             Get(mdx) = ds.ReadStructArray<T>(blockSize / (uint)sizeof(T));
         }
 
