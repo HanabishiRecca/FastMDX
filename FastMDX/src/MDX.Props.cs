@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace FastMDX {
+    using Parsers = System.Collections.Generic.Dictionary<uint, IBlockParser>;
 
-namespace FastMDX {
     public partial class MDX {
         public ModelInfo Info;
         public Sequence[] Sequences;
@@ -22,7 +22,7 @@ namespace FastMDX {
         public Camera[] Cameras;
         public CollisionShape[] CollisionShapes;
 
-        static readonly Dictionary<uint, IBlockParser> _knownParsers = new Dictionary<uint, IBlockParser> {
+        static readonly Parsers _knownParsers = new Parsers {
             [(uint)KnownBlocks.MODL] = new StructParser<ModelInfo>(mdx => ref mdx.Info),
             [(uint)KnownBlocks.SEQS] = new StructArrayParser<Sequence>(mdx => ref mdx.Sequences),
             [(uint)KnownBlocks.GLBS] = new StructArrayParser<GlobalSequence>(mdx => ref mdx.GlobalSequences),
