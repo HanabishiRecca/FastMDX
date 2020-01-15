@@ -9,7 +9,7 @@
         const uint NAME_LEN = 80;
 
         public string Name {
-            get { 
+            get {
                 fixed(byte* n = name)
                     return BinaryString.Decode(n, NAME_LEN);
             }

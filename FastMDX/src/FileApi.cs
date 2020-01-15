@@ -7,8 +7,7 @@ namespace FastMDX {
 
         internal static unsafe uint ReadFile(SafeHandle fileHandle, void* buffer, uint count) {
             if(isWindows) {
-                uint len;
-                var state = W_API.ReadFile(fileHandle, buffer, count, out len, IntPtr.Zero);
+                var state = W_API.ReadFile(fileHandle, buffer, count, out var len, IntPtr.Zero);
                 if(state == 0)
                     throw new Exception();
                 return len;
@@ -19,8 +18,7 @@ namespace FastMDX {
 
         internal static unsafe uint WriteFile(SafeHandle fileHandle, void* buffer, uint count) {
             if(isWindows) {
-                uint len;
-                var state = W_API.WriteFile(fileHandle, buffer, count, out len, IntPtr.Zero);
+                var state = W_API.WriteFile(fileHandle, buffer, count, out var len, IntPtr.Zero);
                 if(state == 0)
                     throw new Exception();
                 return len;
@@ -31,18 +29,18 @@ namespace FastMDX {
 
         static class W_API {
             [DllImport("kernel32.dll", SetLastError = true)]
-            internal unsafe static extern int ReadFile(SafeHandle handle, void* buffer, uint numBytesToRead, out uint numBytesRead, IntPtr mustBeZero);
+            internal static extern unsafe int ReadFile(SafeHandle handle, void* buffer, uint numBytesToRead, out uint numBytesRead, IntPtr mustBeZero);
 
             [DllImport("kernel32.dll", SetLastError = true)]
-            internal unsafe static extern int WriteFile(SafeHandle handle, void* buffer, uint numBytesToWrite, out uint numBytesWritten, IntPtr mustBeZero);
+            internal static extern unsafe int WriteFile(SafeHandle handle, void* buffer, uint numBytesToWrite, out uint numBytesWritten, IntPtr mustBeZero);
         }
 
         static class N_API {
             [DllImport("System.Native", EntryPoint = "SystemNative_Read", SetLastError = true)]
-            internal unsafe static extern uint Read(SafeHandle fd, void* buffer, uint count);
+            internal static extern unsafe uint Read(SafeHandle fd, void* buffer, uint count);
 
             [DllImport("System.Native", EntryPoint = "SystemNative_Write", SetLastError = true)]
-            internal unsafe static extern uint Write(SafeHandle fd, void* buffer, uint count);
+            internal static extern unsafe uint Write(SafeHandle fd, void* buffer, uint count);
         }
     }
 }

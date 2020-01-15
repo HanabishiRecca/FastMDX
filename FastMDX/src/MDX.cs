@@ -6,9 +6,7 @@ namespace FastMDX {
     public partial class MDX {
         public MDX() { }
 
-        public MDX(string filePath) : this() {
-            LoadFromFile(filePath);
-        }
+        public MDX(string filePath) => LoadFromFile(filePath);
 
         BinaryBlock[] UnknownBlocks;
 
@@ -39,8 +37,7 @@ namespace FastMDX {
             while(ds.Offset < ds.Size) {
                 var blockHeader = ds.ReadStruct<BlockHeader>();
 
-                IBlockParser parser;
-                _knownParsers.TryGetValue(blockHeader.tag, out parser);
+                _knownParsers.TryGetValue(blockHeader.tag, out var parser);
 
                 if(parser is null)
                     unknownBlocks.Add(new BinaryBlock { Tag = blockHeader.tag, Data = ds.ReadStructArray<byte>(blockHeader.size) });

@@ -38,7 +38,7 @@ static class Program {
         var maxTime = 0L;
         var minTime = long.MaxValue;
 
-        for(int i = 0; i < N; i++) {
+        for(var i = 0; i < N; i++) {
             Console.Write($"\rRUNNING TEST [{i + 1}/{N}]");
             var time = Test(path);
             if(time > maxTime)

@@ -37,9 +37,7 @@ namespace FastMDX {
             memory.end = Pointer + size;
         }
 
-        internal void Skip(uint count) {
-            memory.current += count;
-        }
+        internal void Skip(uint count) => memory.current += count;
 
         unsafe void CheckReadBounds(uint count) {
             if(memory.current + count > memory.end)
@@ -108,7 +106,7 @@ namespace FastMDX {
             CheckReadBounds(sizeof(uint));
             var arr = new T[*(uint*)memory.current];
             memory.current += sizeof(uint);
-            for(int i = 0; i < arr.Length; i++)
+            for(var i = 0; i < arr.Length; i++)
                 arr[i].ReadFrom(this);
             return arr;
         }
@@ -188,7 +186,7 @@ namespace FastMDX {
             if(src.Length < 1)
                 return;
 
-            for(int i = 0; i < src.Length; i++)
+            for(var i = 0; i < src.Length; i++)
                 src[i].WriteTo(this);
         }
 

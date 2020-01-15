@@ -8,7 +8,7 @@
         const uint PATH_LEN = 260;
 
         public string Path {
-            get { 
+            get {
                 fixed(byte* n = name)
                     return BinaryString.Decode(n, PATH_LEN);
             }
