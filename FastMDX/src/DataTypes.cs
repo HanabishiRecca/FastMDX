@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
 namespace FastMDX {
-
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Vec2 {
         public float x, y;
@@ -34,6 +33,11 @@ namespace FastMDX {
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct Pivot {
+        public Vec3 position;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Track<T> where T : unmanaged {
         public int frame;
         public T tr;
@@ -43,32 +47,5 @@ namespace FastMDX {
     public struct TrackInter<T> where T : unmanaged {
         public int frame;
         public T tr, inTr, outTr;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct MDXHeader {
-        internal uint header, versionHeader, versionSize, version;
-
-        const uint
-            MDLX_HEADER = 0x584C444Du,
-            VERS_HEADER = 0x53524556u;
-
-        internal bool Check() => (header == MDLX_HEADER) && (versionHeader == VERS_HEADER) && (versionSize == sizeof(uint));
-
-        internal void Default() {
-            header = MDLX_HEADER;
-            versionHeader = VERS_HEADER;
-            versionSize = sizeof(uint);
-        }
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct BlockHeader {
-        internal uint tag, size;
-    }
-
-    public class BinaryBlock {
-        public uint Tag;
-        public byte[] Data;
     }
 }

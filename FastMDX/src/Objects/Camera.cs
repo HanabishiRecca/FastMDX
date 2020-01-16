@@ -1,4 +1,9 @@
-﻿namespace FastMDX {
+﻿using LT = FastMDX.Camera;
+
+namespace FastMDX {
+    using static OptionalBlocks;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+
     public unsafe struct Camera : IDataRW {
         fixed byte name[(int)NAME_LEN];
         public Vec3 position, targetPosition;
@@ -31,18 +36,7 @@
             ds.ReadStruct(ref nearClippingPlane);
             ds.ReadStruct(ref targetPosition);
 
-            while(ds.Offset < end) {
-                var tag = ds.ReadStruct<uint>();
-                if(tag == (uint)Tags.KCTR) {
-                    ds.ReadData(ref translation);
-                } else if(tag == (uint)Tags.KCRL) {
-                    ds.ReadData(ref rotation);
-                } else if(tag == (uint)Tags.KTTR) {
-                    ds.ReadData(ref targetTranslation);
-                } else {
-                    throw new ParsingException();
-                }
-            }
+            ds.ReadOptionalBlocks(ref this, _knownTransforms, end);
         }
 
         void IDataRW.WriteTo(DataStream ds) {
@@ -58,28 +52,15 @@
             ds.WriteStruct(nearClippingPlane);
             ds.WriteStruct(targetPosition);
 
-            if(translation.HasData) {
-                ds.WriteStruct(Tags.KCTR);
-                ds.WriteData(ref translation);
-            }
-
-            if(rotation.HasData) {
-                ds.WriteStruct(Tags.KCRL);
-                ds.WriteData(ref rotation);
-            }
-
-            if(targetTranslation.HasData) {
-                ds.WriteStruct(Tags.KTTR);
-                ds.WriteData(ref targetTranslation);
-            }
+            ds.WriteOptionalBlocks(ref this, _knownTransforms);
 
             ds.SetValueAt(offset, ds.Offset - offset);
         }
 
-        enum Tags : uint {
-            KCTR = 0x5254434Bu,
-            KCRL = 0x4C52434Bu,
-            KTTR = 0x5254544Bu,
-        }
+        static readonly Transforms _knownTransforms = new Transforms {
+            [KCTR] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.translation),
+            [KCRL] = new OptionalBlockParser<Transform<uint>, LT>((ref LT p) => ref p.rotation),
+            [KTTR] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.targetTranslation),
+        };
     }
 }

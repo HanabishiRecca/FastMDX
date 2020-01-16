@@ -1,4 +1,9 @@
-﻿namespace FastMDX {
+﻿using LT = FastMDX.Node;
+
+namespace FastMDX {
+    using static OptionalBlocks;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+
     public unsafe struct Node : IDataRW {
         fixed byte name[(int)NAME_LEN];
         public uint objectId, parentId, flags;
@@ -28,18 +33,7 @@
             ds.ReadStruct(ref parentId);
             ds.ReadStruct(ref flags);
 
-            while(ds.Offset < end) {
-                var tag = ds.ReadStruct<uint>();
-                if(tag == (uint)Tags.KGTR) {
-                    ds.ReadData(ref translation);
-                } else if(tag == (uint)Tags.KGRT) {
-                    ds.ReadData(ref rotation);
-                } else if(tag == (uint)Tags.KGSC) {
-                    ds.ReadData(ref scaling);
-                } else {
-                    throw new ParsingException();
-                }
-            }
+            ds.ReadOptionalBlocks(ref this, _knownTransforms, end);
         }
 
         void IDataRW.WriteTo(DataStream ds) {
@@ -53,28 +47,15 @@
             ds.WriteStruct(parentId);
             ds.WriteStruct(flags);
 
-            if(translation.HasData) {
-                ds.WriteStruct(Tags.KGTR);
-                ds.WriteData(ref translation);
-            }
-
-            if(rotation.HasData) {
-                ds.WriteStruct(Tags.KGRT);
-                ds.WriteData(ref rotation);
-            }
-
-            if(scaling.HasData) {
-                ds.WriteStruct(Tags.KGSC);
-                ds.WriteData(ref scaling);
-            }
+            ds.WriteOptionalBlocks(ref this, _knownTransforms);
 
             ds.SetValueAt(offset, ds.Offset - offset);
         }
 
-        enum Tags : uint {
-            KGTR = 0x5254474Bu,
-            KGRT = 0x5452474Bu,
-            KGSC = 0x4353474Bu,
-        }
+        static readonly Transforms _knownTransforms = new Transforms {
+            [KGTR] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.translation),
+            [KGRT] = new OptionalBlockParser<Transform<Vec4>, LT>((ref LT p) => ref p.rotation),
+            [KGSC] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.scaling),
+        };
     }
 }

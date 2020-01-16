@@ -1,4 +1,9 @@
-﻿namespace FastMDX {
+﻿using LT = FastMDX.Attachment;
+
+namespace FastMDX {
+    using static OptionalBlocks;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+
     public unsafe struct Attachment : IDataRW {
         public Node node;
         fixed byte name[(int)PATH_LEN];
@@ -28,14 +33,7 @@
 
             ds.ReadStruct(ref attachmentId);
 
-            while(ds.Offset < end) {
-                var tag = ds.ReadStruct<uint>();
-                if(tag == (uint)Tags.KATV) {
-                    ds.ReadData(ref visibilityTransform);
-                } else {
-                    throw new ParsingException();
-                }
-            }
+            ds.ReadOptionalBlocks(ref this, _knownTransforms, end);
         }
 
         void IDataRW.WriteTo(DataStream ds) {
@@ -49,16 +47,13 @@
 
             ds.WriteStruct(attachmentId);
 
-            if(visibilityTransform.HasData) {
-                ds.WriteStruct(Tags.KATV);
-                ds.WriteData(ref visibilityTransform);
-            }
+            ds.WriteOptionalBlocks(ref this, _knownTransforms);
 
             ds.SetValueAt(offset, ds.Offset - offset);
         }
 
-        enum Tags : uint {
-            KATV = 0x5654414Bu,
-        }
+        static readonly Transforms _knownTransforms = new Transforms {
+            [KATV] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.visibilityTransform),
+        };
     }
 }

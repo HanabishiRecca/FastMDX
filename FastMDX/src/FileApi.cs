@@ -2,6 +2,9 @@
 using System.Runtime.InteropServices;
 
 namespace FastMDX {
+
+    // This class required for cross-platform unmanaged access to the filesystem
+
     static class FileApi {
         static readonly bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 

@@ -1,4 +1,9 @@
-﻿namespace FastMDX {
+﻿using LT = FastMDX.Layer;
+
+namespace FastMDX {
+    using static OptionalBlocks;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+
     public struct Layer : IDataRW {
         public uint filterMode, shadingFlags, textureId, textureAnimationId, coordId;
         public float alpha;
@@ -15,16 +20,7 @@
             ds.ReadStruct(ref coordId);
             ds.ReadStruct(ref alpha);
 
-            while(ds.Offset < end) {
-                var tag = ds.ReadStruct<uint>();
-                if(tag == (uint)Tags.KMTF) {
-                    ds.ReadData(ref materialTextureId);
-                } else if(tag == (uint)Tags.KMTA) {
-                    ds.ReadData(ref materialAlpha);
-                } else {
-                    throw new ParsingException();
-                }
-            }
+            ds.ReadOptionalBlocks(ref this, _knownTransforms, end);
         }
 
         void IDataRW.WriteTo(DataStream ds) {
@@ -38,22 +34,14 @@
             ds.WriteStruct(coordId);
             ds.WriteStruct(alpha);
 
-            if(materialTextureId.HasData) {
-                ds.WriteStruct(Tags.KMTF);
-                ds.WriteData(ref materialTextureId);
-            }
-
-            if(materialAlpha.HasData) {
-                ds.WriteStruct(Tags.KMTA);
-                ds.WriteData(ref materialAlpha);
-            }
+            ds.WriteOptionalBlocks(ref this, _knownTransforms);
 
             ds.SetValueAt(offset, ds.Offset - offset);
         }
 
-        enum Tags : uint {
-            KMTF = 0x46544D4Bu,
-            KMTA = 0x41544D4Bu,
-        }
+        static readonly Transforms _knownTransforms = new Transforms {
+            [KMTF] = new OptionalBlockParser<Transform<uint>, LT>((ref LT p) => ref p.materialTextureId),
+            [KMTA] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.materialAlpha),
+        };
     }
 }

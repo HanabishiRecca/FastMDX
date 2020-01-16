@@ -1,4 +1,9 @@
-﻿namespace FastMDX {
+﻿using LT = FastMDX.Light;
+
+namespace FastMDX {
+    using static OptionalBlocks;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+
     public unsafe struct Light : IDataRW {
         public Node node;
         public uint type;
@@ -20,26 +25,7 @@
             ds.ReadStruct(ref intensity);
             ds.ReadStruct(ref ambientColor);
 
-            while(ds.Offset < end) {
-                var tag = ds.ReadStruct<uint>();
-                if(tag == (uint)Tags.KLAS) {
-                    ds.ReadData(ref attenuationStartTransform);
-                } else if(tag == (uint)Tags.KLAE) {
-                    ds.ReadData(ref attenuationEndTransform);
-                } else if(tag == (uint)Tags.KLAC) {
-                    ds.ReadData(ref colorTransform);
-                } else if(tag == (uint)Tags.KLAI) {
-                    ds.ReadData(ref intensityTransform);
-                } else if(tag == (uint)Tags.KLBI) {
-                    ds.ReadData(ref ambientIntensityTransform);
-                } else if(tag == (uint)Tags.KLBC) {
-                    ds.ReadData(ref ambientColorTransform);
-                } else if(tag == (uint)Tags.KLAV) {
-                    ds.ReadData(ref visibilityTransform);
-                } else {
-                    throw new ParsingException();
-                }
-            }
+            ds.ReadOptionalBlocks(ref this, _knownTransforms, end);
         }
 
         void IDataRW.WriteTo(DataStream ds) {
@@ -55,52 +41,19 @@
             ds.WriteStruct(intensity);
             ds.WriteStruct(ambientColor);
 
-            if(attenuationStartTransform.HasData) {
-                ds.WriteStruct(Tags.KLAS);
-                ds.WriteData(ref attenuationStartTransform);
-            }
-
-            if(attenuationEndTransform.HasData) {
-                ds.WriteStruct(Tags.KLAE);
-                ds.WriteData(ref attenuationEndTransform);
-            }
-
-            if(colorTransform.HasData) {
-                ds.WriteStruct(Tags.KLAC);
-                ds.WriteData(ref colorTransform);
-            }
-
-            if(intensityTransform.HasData) {
-                ds.WriteStruct(Tags.KLAI);
-                ds.WriteData(ref intensityTransform);
-            }
-
-            if(ambientIntensityTransform.HasData) {
-                ds.WriteStruct(Tags.KLBI);
-                ds.WriteData(ref ambientIntensityTransform);
-            }
-
-            if(ambientColorTransform.HasData) {
-                ds.WriteStruct(Tags.KLBC);
-                ds.WriteData(ref ambientColorTransform);
-            }
-
-            if(visibilityTransform.HasData) {
-                ds.WriteStruct(Tags.KLAV);
-                ds.WriteData(ref visibilityTransform);
-            }
+            ds.WriteOptionalBlocks(ref this, _knownTransforms);
 
             ds.SetValueAt(offset, ds.Offset - offset);
         }
 
-        enum Tags : uint {
-            KLAS = 0x53414C4Bu,
-            KLAE = 0x45414C4Bu,
-            KLAC = 0x43414C4Bu,
-            KLAI = 0x49414C4Bu,
-            KLBI = 0x49424C4Bu,
-            KLBC = 0x43424C4Bu,
-            KLAV = 0x56414C4Bu,
-        }
+        static readonly Transforms _knownTransforms = new Transforms {
+            [KLAS] = new OptionalBlockParser<Transform<uint>, LT>((ref LT p) => ref p.attenuationStartTransform),
+            [KLAE] = new OptionalBlockParser<Transform<uint>, LT>((ref LT p) => ref p.attenuationEndTransform),
+            [KLAC] = new OptionalBlockParser<Transform<Color>, LT>((ref LT p) => ref p.colorTransform),
+            [KLAI] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.intensityTransform),
+            [KLBI] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.ambientIntensityTransform),
+            [KLBC] = new OptionalBlockParser<Transform<Color>, LT>((ref LT p) => ref p.ambientColorTransform),
+            [KLAV] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.visibilityTransform),
+        };
     }
 }

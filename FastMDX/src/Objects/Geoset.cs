@@ -1,4 +1,6 @@
 ﻿namespace FastMDX {
+    using static InnerBlocks;
+
     public struct Geoset : IDataRW {
         public Vec3[] vertexPositions, vertexNormals;
         public uint[] faceTypeGroups, faceGroups, matrixGroups, matrixIndices;
@@ -12,28 +14,28 @@
         void IDataRW.ReadFrom(DataStream ds) {
             ds.Skip(sizeof(uint));
 
-            ds.CheckTag((uint)Tags.VRTX);
+            ds.CheckTag(VRTX);
             vertexPositions = ds.ReadStructArray<Vec3>();
 
-            ds.CheckTag((uint)Tags.NRMS);
+            ds.CheckTag(NRMS);
             vertexNormals = ds.ReadStructArray<Vec3>();
 
-            ds.CheckTag((uint)Tags.PTYP);
+            ds.CheckTag(PTYP);
             faceTypeGroups = ds.ReadStructArray<uint>();
 
-            ds.CheckTag((uint)Tags.PCNT);
+            ds.CheckTag(PCNT);
             faceGroups = ds.ReadStructArray<uint>();
 
-            ds.CheckTag((uint)Tags.PVTX);
+            ds.CheckTag(PVTX);
             faces = ds.ReadStructArray<ushort>();
 
-            ds.CheckTag((uint)Tags.GNDX);
+            ds.CheckTag(GNDX);
             vertexGroups = ds.ReadStructArray<byte>();
 
-            ds.CheckTag((uint)Tags.MTGC);
+            ds.CheckTag(MTGC);
             matrixGroups = ds.ReadStructArray<uint>();
 
-            ds.CheckTag((uint)Tags.MATS);
+            ds.CheckTag(MATS);
             matrixIndices = ds.ReadStructArray<uint>();
 
             ds.ReadStruct(ref materialId);
@@ -43,7 +45,7 @@
 
             sequenceExtents = ds.ReadStructArray<Extent>();
 
-            ds.CheckTag((uint)Tags.UVAS);
+            ds.CheckTag(UVAS);
             textureCoordinateSets = ds.ReadDataArray<TextureCoordinateSet>();
         }
 
@@ -51,28 +53,28 @@
             var offset = ds.Offset;
             ds.Skip(sizeof(uint));
 
-            ds.WriteStruct(Tags.VRTX);
+            ds.WriteStruct(VRTX);
             ds.WriteStructArray(vertexPositions);
 
-            ds.WriteStruct(Tags.NRMS);
+            ds.WriteStruct(NRMS);
             ds.WriteStructArray(vertexNormals);
 
-            ds.WriteStruct(Tags.PTYP);
+            ds.WriteStruct(PTYP);
             ds.WriteStructArray(faceTypeGroups);
 
-            ds.WriteStruct(Tags.PCNT);
+            ds.WriteStruct(PCNT);
             ds.WriteStructArray(faceGroups);
 
-            ds.WriteStruct(Tags.PVTX);
+            ds.WriteStruct(PVTX);
             ds.WriteStructArray(faces);
 
-            ds.WriteStruct(Tags.GNDX);
+            ds.WriteStruct(GNDX);
             ds.WriteStructArray(vertexGroups);
 
-            ds.WriteStruct(Tags.MTGC);
+            ds.WriteStruct(MTGC);
             ds.WriteStructArray(matrixGroups);
 
-            ds.WriteStruct(Tags.MATS);
+            ds.WriteStruct(MATS);
             ds.WriteStructArray(matrixIndices);
 
             ds.WriteStruct(materialId);
@@ -82,22 +84,10 @@
 
             ds.WriteStructArray(sequenceExtents);
 
-            ds.WriteStruct(Tags.UVAS);
+            ds.WriteStruct(UVAS);
             ds.WriteDataArray(textureCoordinateSets);
 
             ds.SetValueAt(offset, ds.Offset - offset);
-        }
-
-        enum Tags : uint {
-            VRTX = 0x58545256u,
-            NRMS = 0x534D524Eu,
-            PTYP = 0x50595450u,
-            PCNT = 0x544E4350u,
-            PVTX = 0x58545650u,
-            GNDX = 0x58444E47u,
-            MTGC = 0x4347544Du,
-            MATS = 0x5354414Du,
-            UVAS = 0x53415655u,
         }
     }
 }

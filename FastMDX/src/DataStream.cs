@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace FastMDX {
@@ -49,9 +50,9 @@ namespace FastMDX {
                 Realloc(count);
         }
 
-        internal unsafe void CheckTag(uint tag) {
-            CheckReadBounds(sizeof(uint));
-            if(*(uint*)memory.current != tag)
+        internal unsafe void CheckTag(InnerBlocks tag) {
+            CheckReadBounds(sizeof(InnerBlocks));
+            if(*(InnerBlocks*)memory.current != tag)
                 throw new ParsingException();
             memory.current += sizeof(uint);
         }
@@ -132,6 +133,18 @@ namespace FastMDX {
             return arr;
         }
 
+        internal unsafe void ReadOptionalBlocks<T>(ref T dst, Dictionary<OptionalBlocks, IOptionalBlocksParser<T>> knownBlocks, uint endOffset) where T : struct, IDataRW {
+            var end = Pointer + endOffset;
+            while(memory.current < end) {
+                knownBlocks.TryGetValue(ReadStruct<OptionalBlocks>(), out var block);
+
+                if(block is null)
+                    throw new ParsingException();
+
+                block.ReadFrom(ref dst, this);
+            }
+        }
+
         internal unsafe void WriteStruct<T>(T src) where T : unmanaged {
             CheckWriteBounds((uint)sizeof(T));
             *(T*)memory.current = src;
@@ -190,28 +203,31 @@ namespace FastMDX {
                 src[i].WriteTo(this);
         }
 
-        #region IDisposable
-        private bool disposed = false;
+        internal unsafe void WriteOptionalBlocks<T>(ref T src, Dictionary<OptionalBlocks, IOptionalBlocksParser<T>> knownBlocks) where T : struct, IDataRW {
+            foreach(var block in knownBlocks) {
+                if(block.Value.HasData(ref src)) {
+                    WriteStruct(block.Key);
+                    block.Value.WriteTo(ref src, this);
+                }
+            }
+        }
 
+        #region IDisposable
         public void Dispose() {
-            if(disposed)
+            if(_ptr == IntPtr.Zero)
                 return;
 
             Marshal.FreeHGlobal(_ptr);
+            _ptr = IntPtr.Zero;
             GC.RemoveMemoryPressure(Size);
             GC.SuppressFinalize(this);
-            disposed = true;
         }
 
-        ~DataStream() {
-            Dispose();
-        }
+        ~DataStream() => Dispose();
         #endregion
 
         unsafe struct MemoryBlock {
             internal byte* current, end;
         }
     }
-
-
 }

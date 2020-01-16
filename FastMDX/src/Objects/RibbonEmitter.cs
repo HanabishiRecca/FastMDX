@@ -1,6 +1,10 @@
 ﻿using System.Runtime.InteropServices;
+using LT = FastMDX.RibbonEmitter;
 
 namespace FastMDX {
+    using static OptionalBlocks;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+
     public unsafe struct RibbonEmitter : IDataRW {
         public Node node;
         public REProps properties;
@@ -12,24 +16,7 @@ namespace FastMDX {
             ds.ReadData(ref node);
             ds.ReadStruct(ref properties);
 
-            while(ds.Offset < end) {
-                var tag = ds.ReadStruct<uint>();
-                if(tag == (uint)Tags.KRVS) {
-                    ds.ReadData(ref visibilityTransform);
-                } else if(tag == (uint)Tags.KRHA) {
-                    ds.ReadData(ref heightAboveTransform);
-                } else if(tag == (uint)Tags.KRHB) {
-                    ds.ReadData(ref heightBelowTransform);
-                } else if(tag == (uint)Tags.KRAL) {
-                    ds.ReadData(ref alphaTransform);
-                } else if(tag == (uint)Tags.KRCO) {
-                    ds.ReadData(ref colorTransform);
-                } else if(tag == (uint)Tags.KRTX) {
-                    ds.ReadData(ref textureSlotTransform);
-                } else {
-                    throw new ParsingException();
-                }
-            }
+            ds.ReadOptionalBlocks(ref this, _knownTransforms, end);
         }
 
         void IDataRW.WriteTo(DataStream ds) {
@@ -39,47 +26,19 @@ namespace FastMDX {
             ds.WriteData(ref node);
             ds.WriteStruct(ref properties);
 
-            if(visibilityTransform.HasData) {
-                ds.WriteStruct(Tags.KRVS);
-                ds.WriteData(ref visibilityTransform);
-            }
-
-            if(heightAboveTransform.HasData) {
-                ds.WriteStruct(Tags.KRHA);
-                ds.WriteData(ref heightAboveTransform);
-            }
-
-            if(heightBelowTransform.HasData) {
-                ds.WriteStruct(Tags.KRHB);
-                ds.WriteData(ref heightBelowTransform);
-            }
-
-            if(alphaTransform.HasData) {
-                ds.WriteStruct(Tags.KRAL);
-                ds.WriteData(ref alphaTransform);
-            }
-
-            if(colorTransform.HasData) {
-                ds.WriteStruct(Tags.KRCO);
-                ds.WriteData(ref colorTransform);
-            }
-
-            if(textureSlotTransform.HasData) {
-                ds.WriteStruct(Tags.KRTX);
-                ds.WriteData(ref textureSlotTransform);
-            }
+            ds.WriteOptionalBlocks(ref this, _knownTransforms);
 
             ds.SetValueAt(offset, ds.Offset - offset);
         }
 
-        enum Tags : uint {
-            KRVS = 0x5356524Bu,
-            KRHA = 0x4148524Bu,
-            KRHB = 0x4248524Bu,
-            KRAL = 0x4C41524Bu,
-            KRCO = 0x4F43524Bu,
-            KRTX = 0x5854524Bu,
-        }
+        static readonly Transforms _knownTransforms = new Transforms {
+            [KRVS] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.visibilityTransform),
+            [KRHA] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.heightAboveTransform),
+            [KRHB] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.heightBelowTransform),
+            [KRAL] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.alphaTransform),
+            [KRCO] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.colorTransform),
+            [KRTX] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.textureSlotTransform),
+        };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct REProps {

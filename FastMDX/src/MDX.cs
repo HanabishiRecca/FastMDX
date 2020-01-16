@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace FastMDX {
+    using static MainBlocks;
+
     public partial class MDX {
         public MDX() { }
 
@@ -86,5 +89,30 @@ namespace FastMDX {
             FileApi.WriteFile(fileHandle, ds.Pointer, ds.Offset);
             stream.Flush(true);
         }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        struct MDXHeader {
+            internal MainBlocks header, versionHeader;
+            internal uint versionSize, version;
+
+            internal bool Check() => (header == MDLX) && (versionHeader == VERS) && (versionSize == sizeof(uint));
+
+            internal void Default() {
+                header = MDLX;
+                versionHeader = VERS;
+                versionSize = sizeof(uint);
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        struct BlockHeader {
+            internal MainBlocks tag;
+            internal uint size;
+        }
+    }
+
+    public class BinaryBlock {
+        public MainBlocks Tag;
+        public byte[] Data;
     }
 }
