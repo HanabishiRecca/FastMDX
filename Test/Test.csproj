@@ -14,6 +14,7 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>./bin</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -21,6 +22,7 @@
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <OutputPath>./bin</OutputPath>
+    <DefineConstants></DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -7,17 +7,13 @@ namespace FastMDX {
     using static MainBlocks;
 
     public partial class MDX {
+        const uint VERSION = 800u;
+
+        public BinaryBlock[] UnknownBlocks;
+
         public MDX() { }
 
-        public MDX(string filePath) => LoadFromFile(filePath);
-
-        BinaryBlock[] UnknownBlocks;
-
-        public long ParsingTime { get; private set; }
-
-        const uint MDX_VERSION = 800u;
-
-        unsafe void LoadFromFile(string filePath) {
+        public unsafe MDX(string filePath) {
             using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1, false);
             var fileHandle = stream.SafeFileHandle;
 
@@ -25,7 +21,7 @@ namespace FastMDX {
             if((FileApi.ReadFile(fileHandle, &mdxHeader, (uint)sizeof(MDXHeader)) < sizeof(MDXHeader)) || !mdxHeader.Check())
                 throw new Exception("Not a MDX file!");
 
-            if(mdxHeader.version != MDX_VERSION)
+            if(mdxHeader.version != VERSION)
                 throw new Exception("Not supported file version!");
 
             var len = (uint)(stream.Length - sizeof(MDXHeader));
@@ -33,9 +29,6 @@ namespace FastMDX {
             FileApi.ReadFile(fileHandle, ds.Pointer, len);
 
             var unknownBlocks = new List<BinaryBlock>(10);
-
-            var t = new System.Diagnostics.Stopwatch();
-            t.Start();
 
             while(ds.Offset < ds.Size) {
                 var blockHeader = ds.ReadStruct<BlockHeader>();
@@ -48,9 +41,6 @@ namespace FastMDX {
                     parser.ReadFrom(this, ds, blockHeader.size);
             }
 
-            t.Stop();
-            ParsingTime = t.ElapsedTicks;
-
             UnknownBlocks = unknownBlocks.ToArray();
         }
 
@@ -62,7 +52,7 @@ namespace FastMDX {
 
             var mdxHeader = new MDXHeader();
             mdxHeader.Default();
-            mdxHeader.version = MDX_VERSION;
+            mdxHeader.version = VERSION;
 
             ds.WriteStruct(ref mdxHeader);
 

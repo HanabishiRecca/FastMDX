@@ -13,58 +13,54 @@ static class Program {
     static void Main(string[] args) {
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-        if(!(args?.Length > 0))
+        if(!(args?.Length > 0)) {
+            Console.WriteLine("Pass a model file path as an argument to start the test");
             return;
-
-        var path = args[0];
-        if(!File.Exists(path))
-            return;
-
-        Run(path);
-    }
-
-    static void Run(string path) {
-        // Parsing test + JIT warm up
-        var mdx = new MDX(path);
-        mdx.SaveToFile(Path.ChangeExtension(path, "new.mdx"));
-        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
-
-        // Performance test
-
-        Console.WriteLine($"CPU HPET: {(Stopwatch.IsHighResolution ? "yes" : "no (benchmark results may be inaccurate)")}");
-
-        var N = 100;
-        var St = 0L;
-        var maxTime = 0L;
-        var minTime = long.MaxValue;
-
-        for(var i = 0; i < N; i++) {
-            Console.Write($"\rRUNNING TEST [{i + 1}/{N}]");
-            var time = Test(path);
-            if(time > maxTime)
-                maxTime = time;
-            if(time < minTime)
-                minTime = time;
-            St += time;
         }
 
+        var path = args[0];
+        if(!File.Exists(path)) {
+            Console.WriteLine($"Path {path} not found");
+            return;
+        }
+
+        try {
+            Test(path);
+        } catch(Exception e) {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    // Parsing test
+    static void Test(string path) {
+        Console.WriteLine($"Loading from \"{path}\"");
+
+        var mdx = new MDX(path);
+
         Console.WriteLine();
-        Console.WriteLine("Parsing time (not including disk access delay)");
-        Console.WriteLine($"MIN: {SWTime(minTime)} ms");
-        Console.WriteLine($"AVG: {SWTime(St) / N} ms");
-        Console.WriteLine($"MAX: {SWTime(maxTime)} ms");
+        Console.WriteLine($"{nameof(mdx.Info.Name)}: {mdx.Info.Name}");
+        Console.WriteLine($"{nameof(mdx.Sequences)}: {mdx.Sequences?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.GlobalSequences)}: {mdx.GlobalSequences?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.Materials)}: {mdx.Materials?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.Textures)}: {mdx.Textures?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.TextureAnimations)}: {mdx.TextureAnimations?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.Geosets)}: {mdx.Geosets?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.GeosetAnimations)}: {mdx.GeosetAnimations?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.Bones)}: {mdx.Bones?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.Lights)}: {mdx.Lights?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.Helpers)}: {mdx.Helpers?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.Attachments)}: {mdx.Attachments?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.Pivots)}: {mdx.Pivots?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.ParticleEmitters)}: {mdx.ParticleEmitters?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.ParticleEmitters2)}: {mdx.ParticleEmitters2?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.RibbonEmitters)}: {mdx.RibbonEmitters?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.EventObjects)}: {mdx.EventObjects?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.Cameras)}: {mdx.Cameras?.Length ?? 0}");
+        Console.WriteLine($"{nameof(mdx.CollisionShapes)}: {mdx.CollisionShapes?.Length ?? 0}");
+        Console.WriteLine();
+
+        var newPath = Path.ChangeExtension(path, "new.mdx");
+        Console.WriteLine($"Saving to \"{newPath}\"");
+        mdx.SaveToFile(newPath);
     }
-
-    static long Test(string file) {
-        var mdx = new MDX(file);
-
-        var time = mdx.ParsingTime;
-
-        // Force GC to avoid impact during the measurement interval
-        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
-
-        return time;
-    }
-
-    static double SWTime(long ticks) => ticks * 1000.0 / Stopwatch.Frequency;
 }
