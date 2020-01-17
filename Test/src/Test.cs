@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using FastMDX;
@@ -24,11 +23,7 @@ static class Program {
             return;
         }
 
-        try {
-            Test(path);
-        } catch(Exception e) {
-            Console.WriteLine(e.Message);
-        }
+        Test(path);
     }
 
     // Parsing test
@@ -61,6 +56,6 @@ static class Program {
 
         var newPath = Path.ChangeExtension(path, "new.mdx");
         Console.WriteLine($"Saving to \"{newPath}\"");
-        mdx.SaveToFile(newPath);
+        mdx.SaveTo(newPath);
     }
 }

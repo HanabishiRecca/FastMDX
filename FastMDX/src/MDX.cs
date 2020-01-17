@@ -13,22 +13,34 @@ namespace FastMDX {
 
         public MDX() { }
 
-        public unsafe MDX(string filePath) {
+        public MDX(string filePath) {
             using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1, false);
-            var fileHandle = stream.SafeFileHandle;
+            LoadFrom(stream, stream.Length);
+        }
+
+        public MDX(Stream stream) => LoadFrom(stream, stream.Length - stream.Position);
+
+        public MDX(Stream stream, uint fileSize) => LoadFrom(stream, fileSize);
+
+        public unsafe void LoadFrom(Stream stream, long fileSize) {
+            if(fileSize > int.MaxValue)
+                throw new Exception("File is too large!");
 
             var mdxHeader = new MDXHeader();
-            if((FileApi.ReadFile(fileHandle, &mdxHeader, (uint)sizeof(MDXHeader)) < sizeof(MDXHeader)) || !mdxHeader.Check())
+            if((stream.Read(new Span<byte>(&mdxHeader, sizeof(MDXHeader))) < sizeof(MDXHeader)) || !mdxHeader.Check())
                 throw new Exception("Not a MDX file!");
 
             if(mdxHeader.version != VERSION)
                 throw new Exception("Not supported file version!");
 
-            var len = (uint)(stream.Length - sizeof(MDXHeader));
-            using var ds = new DataStream(len);
-            FileApi.ReadFile(fileHandle, ds.Pointer, len);
+            fileSize -= sizeof(MDXHeader);
+            if(fileSize == 0)
+                return;
 
-            var unknownBlocks = new List<BinaryBlock>(10);
+            using var ds = new DataStream((uint)fileSize);
+            stream.Read(new Span<byte>(ds.Pointer, (int)fileSize));
+
+            var unknownBlocks = new List<BinaryBlock>();
 
             while(ds.Offset < ds.Size) {
                 var blockHeader = ds.ReadStruct<BlockHeader>();
@@ -41,13 +53,17 @@ namespace FastMDX {
                     parser.ReadFrom(this, ds, blockHeader.size);
             }
 
-            UnknownBlocks = unknownBlocks.ToArray();
+            if(unknownBlocks.Count > 0)
+                UnknownBlocks = unknownBlocks.ToArray();
         }
 
-        public unsafe void SaveToFile(string filePath) {
+        public void SaveTo(string filePath) {
             using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Write, 1, false);
-            var fileHandle = stream.SafeFileHandle;
+            SaveTo(stream);
+            stream.Flush(true);
+        }
 
+        public unsafe void SaveTo(Stream stream) {
             using var ds = new DataStream();
 
             var mdxHeader = new MDXHeader();
@@ -76,8 +92,7 @@ namespace FastMDX {
                         ds.WriteStructArray(block.Data);
                     }
 
-            FileApi.WriteFile(fileHandle, ds.Pointer, ds.Offset);
-            stream.Flush(true);
+            stream.Write(new ReadOnlySpan<byte>(ds.Pointer, (int)ds.Offset));
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
