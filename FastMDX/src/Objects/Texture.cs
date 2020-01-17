@@ -3,12 +3,11 @@
 namespace FastMDX {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public unsafe struct Texture {
-        public uint replaceableId;
-        fixed byte name[(int)NAME_LEN];
-        public uint flags;
+        const uint NAME_LEN = 260;
 
-        const uint
-            NAME_LEN = 260;
+        public int ReplaceableId;
+        fixed byte name[(int)NAME_LEN];
+        public uint Flags;
 
         public string Name {
             get {

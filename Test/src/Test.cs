@@ -23,11 +23,6 @@ static class Program {
             return;
         }
 
-        Test(path);
-    }
-
-    // Parsing test
-    static void Test(string path) {
         Console.WriteLine($"Loading from \"{path}\"");
 
         var mdx = new MDX(path);

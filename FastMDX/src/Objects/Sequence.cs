@@ -3,16 +3,15 @@
 namespace FastMDX {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public unsafe struct Sequence {
-        fixed byte name[(int)NAME_LEN];
-        public uint intervalStart, intervalEnd;
-        public float moveSpeed;
-        public uint flags;
-        public float rarity;
-        public uint syncPoint;
-        public Extent extent;
+        const uint NAME_LEN = 80;
 
-        const uint
-            NAME_LEN = 80;
+        fixed byte name[(int)NAME_LEN];
+        public uint IntervalStart, IntervalEnd;
+        public float MoveSpeed;
+        public uint Flags;
+        public float Rarity;
+        public uint SyncPoint;
+        public Extent Extent;
 
         public string Name {
             get {

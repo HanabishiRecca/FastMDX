@@ -1,31 +1,32 @@
-﻿namespace FastMDX {
+﻿using System.Runtime.InteropServices;
+
+namespace FastMDX {
     using static InnerBlocks;
 
     public struct Material : IDataRW {
-        public uint priorityPlane, flags;
-        public Layer[] layers;
+        public LocalProperties Properties;
+        public Layer[] Layers;
 
         void IDataRW.ReadFrom(DataStream ds) {
             ds.Skip(sizeof(uint));
-
-            ds.ReadStruct(ref priorityPlane);
-            ds.ReadStruct(ref flags);
-
+            ds.ReadStruct(ref Properties);
             ds.CheckTag(LAYS);
-            layers = ds.ReadDataArray<Layer>();
+            Layers = ds.ReadDataArray<Layer>();
         }
 
         void IDataRW.WriteTo(DataStream ds) {
             var offset = ds.Offset;
             ds.Skip(sizeof(uint));
-
-            ds.WriteStruct(priorityPlane);
-            ds.WriteStruct(flags);
-
+            ds.WriteStruct(ref Properties);
             ds.WriteStruct(LAYS);
-            ds.WriteDataArray(layers);
+            ds.WriteDataArray(Layers);
 
             ds.SetValueAt(offset, ds.Offset - offset);
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct LocalProperties {
+            public uint PriorityPlane, Flags;
         }
     }
 }

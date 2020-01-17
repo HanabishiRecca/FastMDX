@@ -6,67 +6,64 @@ namespace FastMDX {
     using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
 
     public unsafe struct ParticleEmitter2 : IDataRW {
-        public Node node;
-        public PE2Props properties;
-        public Transform<float> emissionRateTransform, gravityTransform, latitudeTransform, speedTransform, visibilityTransform, variationTransform, lengthTransform, widthTransform;
+        public Node Node;
+        public LocalProperties Properties;
+        public Transform<float> EmissionRateTransform, GravityTransform, LatitudeTransform, SpeedTransform, VisibilityTransform, VariationTransform, LengthTransform, WidthTransform;
 
         void IDataRW.ReadFrom(DataStream ds) {
             var end = ds.Offset + ds.ReadStruct<uint>();
-
-            ds.ReadData(ref node);
-            ds.ReadStruct(ref properties);
-
+            ds.ReadData(ref Node);
+            ds.ReadStruct(ref Properties);
             ds.ReadOptionalBlocks(ref this, _knownTransforms, end);
         }
 
         void IDataRW.WriteTo(DataStream ds) {
             var offset = ds.Offset;
             ds.Skip(sizeof(uint));
-
-            ds.WriteData(ref node);
-            ds.WriteStruct(ref properties);
-
+            ds.WriteData(ref Node);
+            ds.WriteStruct(ref Properties);
             ds.WriteOptionalBlocks(ref this, _knownTransforms);
-
             ds.SetValueAt(offset, ds.Offset - offset);
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KP2E] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.emissionRateTransform),
-            [KP2G] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.gravityTransform),
-            [KP2L] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.latitudeTransform),
-            [KP2S] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.speedTransform),
-            [KP2V] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.visibilityTransform),
-            [KP2R] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.variationTransform),
-            [KP2N] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.lengthTransform),
-            [KP2W] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.widthTransform),
+            [KP2E] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.EmissionRateTransform),
+            [KP2G] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.GravityTransform),
+            [KP2L] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.LatitudeTransform),
+            [KP2S] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.SpeedTransform),
+            [KP2V] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.VisibilityTransform),
+            [KP2R] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.VariationTransform),
+            [KP2N] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.LengthTransform),
+            [KP2W] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.WidthTransform),
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct PE2Props {
-            public float speed, variation, latitude, gravity, lifespan, emissionRate, length, width;
-            public uint filterMode, rows, columns, flag;
-            public float tailLength, time;
-            public SegmentColor segmentColor;
-            public SegmentAlpha segmentAlpha;
-            public Vec3 segmentScaling;
-            public Interval headInterval, headDecayInterval, tailInterval, tailDecayInterval;
-            public uint textureId, squirt, priorityPlane, replaceableId;
+        public struct LocalProperties {
+            public float Speed, Variation, Latitude, Gravity, Lifespan, EmissionRate, Length, Width;
+            public uint FilterMode, Rows, Columns, Flag;
+            public float TailLength, Time;
+            public SegmentColor SegmentColor;
+            public SegmentAlpha SegmentAlpha;
+            public Vec3 SegmentScaling;
+            public Interval HeadInterval, HeadDecayInterval, TailInterval, TailDecayInterval;
+            public int TextureId;
+            public uint Squirt, PriorityPlane;
+            public int ReplaceableId;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SegmentColor {
-            public Color color1, color2, color3;
+            public Color Color1, Color2, Color3;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SegmentAlpha {
-            public byte alpha1, alpha2, alpha3;
+            public byte Alpha1, Alpha2, Alpha3;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Interval {
-            public uint start, end, repeat;
+            public uint Start, End, Repeat;
         }
     }
 }

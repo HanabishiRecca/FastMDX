@@ -3,13 +3,13 @@
 namespace FastMDX {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public unsafe struct ModelInfo {
-        fixed byte name[(int)NAME_LEN], animationFile[(int)ANIM_LEN];
-        public Extent extent;
-        public uint blendTime;
-
         const uint
             NAME_LEN = 80,
             ANIM_LEN = 260;
+
+        fixed byte name[(int)NAME_LEN], animationFile[(int)ANIM_LEN];
+        public Extent Extent;
+        public uint BlendTime;
 
         public string Name {
             get {
@@ -22,7 +22,7 @@ namespace FastMDX {
             }
         }
 
-        public string AnimationFileName {
+        public string AnimationFile {
             get {
                 fixed(byte* n = animationFile)
                     return BinaryString.Decode(n, ANIM_LEN);

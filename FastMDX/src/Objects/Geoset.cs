@@ -1,52 +1,50 @@
-﻿namespace FastMDX {
+﻿using System.Runtime.InteropServices;
+
+namespace FastMDX {
     using static InnerBlocks;
 
     public struct Geoset : IDataRW {
-        public Vec3[] vertexPositions, vertexNormals;
-        public uint[] faceTypeGroups, faceGroups, matrixGroups, matrixIndices;
-        public ushort[] faces;
-        public byte[] vertexGroups;
-        public uint materialId, selectionGroup, selectionFlags;
-        public Extent extent;
-        public Extent[] sequenceExtents;
-        public TextureCoordinateSet[] textureCoordinateSets;
+        public Vec3[] VertexPositions, VertexNormals;
+        public uint[] FaceTypeGroups, FaceGroups, MatrixGroups, MatrixIndices;
+        public ushort[] Faces;
+        public byte[] VertexGroups;
+        public LocalProperties Properties;
+        public Extent[] SequenceExtents;
+        public TextureCoordinateSet[] TextureCoordinateSets;
 
         void IDataRW.ReadFrom(DataStream ds) {
             ds.Skip(sizeof(uint));
 
             ds.CheckTag(VRTX);
-            vertexPositions = ds.ReadStructArray<Vec3>();
+            VertexPositions = ds.ReadStructArray<Vec3>();
 
             ds.CheckTag(NRMS);
-            vertexNormals = ds.ReadStructArray<Vec3>();
+            VertexNormals = ds.ReadStructArray<Vec3>();
 
             ds.CheckTag(PTYP);
-            faceTypeGroups = ds.ReadStructArray<uint>();
+            FaceTypeGroups = ds.ReadStructArray<uint>();
 
             ds.CheckTag(PCNT);
-            faceGroups = ds.ReadStructArray<uint>();
+            FaceGroups = ds.ReadStructArray<uint>();
 
             ds.CheckTag(PVTX);
-            faces = ds.ReadStructArray<ushort>();
+            Faces = ds.ReadStructArray<ushort>();
 
             ds.CheckTag(GNDX);
-            vertexGroups = ds.ReadStructArray<byte>();
+            VertexGroups = ds.ReadStructArray<byte>();
 
             ds.CheckTag(MTGC);
-            matrixGroups = ds.ReadStructArray<uint>();
+            MatrixGroups = ds.ReadStructArray<uint>();
 
             ds.CheckTag(MATS);
-            matrixIndices = ds.ReadStructArray<uint>();
+            MatrixIndices = ds.ReadStructArray<uint>();
 
-            ds.ReadStruct(ref materialId);
-            ds.ReadStruct(ref selectionGroup);
-            ds.ReadStruct(ref selectionFlags);
-            ds.ReadStruct(ref extent);
+            ds.ReadStruct(ref Properties);
 
-            sequenceExtents = ds.ReadStructArray<Extent>();
+            SequenceExtents = ds.ReadStructArray<Extent>();
 
             ds.CheckTag(UVAS);
-            textureCoordinateSets = ds.ReadDataArray<TextureCoordinateSet>();
+            TextureCoordinateSets = ds.ReadDataArray<TextureCoordinateSet>();
         }
 
         void IDataRW.WriteTo(DataStream ds) {
@@ -54,40 +52,44 @@
             ds.Skip(sizeof(uint));
 
             ds.WriteStruct(VRTX);
-            ds.WriteStructArray(vertexPositions);
+            ds.WriteStructArray(VertexPositions);
 
             ds.WriteStruct(NRMS);
-            ds.WriteStructArray(vertexNormals);
+            ds.WriteStructArray(VertexNormals);
 
             ds.WriteStruct(PTYP);
-            ds.WriteStructArray(faceTypeGroups);
+            ds.WriteStructArray(FaceTypeGroups);
 
             ds.WriteStruct(PCNT);
-            ds.WriteStructArray(faceGroups);
+            ds.WriteStructArray(FaceGroups);
 
             ds.WriteStruct(PVTX);
-            ds.WriteStructArray(faces);
+            ds.WriteStructArray(Faces);
 
             ds.WriteStruct(GNDX);
-            ds.WriteStructArray(vertexGroups);
+            ds.WriteStructArray(VertexGroups);
 
             ds.WriteStruct(MTGC);
-            ds.WriteStructArray(matrixGroups);
+            ds.WriteStructArray(MatrixGroups);
 
             ds.WriteStruct(MATS);
-            ds.WriteStructArray(matrixIndices);
+            ds.WriteStructArray(MatrixIndices);
 
-            ds.WriteStruct(materialId);
-            ds.WriteStruct(selectionGroup);
-            ds.WriteStruct(selectionFlags);
-            ds.WriteStruct(extent);
+            ds.WriteStruct(ref Properties);
 
-            ds.WriteStructArray(sequenceExtents);
+            ds.WriteStructArray(SequenceExtents);
 
             ds.WriteStruct(UVAS);
-            ds.WriteDataArray(textureCoordinateSets);
+            ds.WriteDataArray(TextureCoordinateSets);
 
             ds.SetValueAt(offset, ds.Offset - offset);
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct LocalProperties {
+            public int MaterialId;
+            public uint SelectionGroup, SelectionFlags;
+            public Extent Extent;
         }
     }
 }

@@ -2,16 +2,16 @@
     using static InnerBlocks;
 
     public struct TextureCoordinateSet : IDataRW {
-        public Vec2[] textureCoordinates;
+        public Vec2[] TextureCoordinates;
 
         void IDataRW.ReadFrom(DataStream ds) {
             ds.CheckTag(UVBS);
-            textureCoordinates = ds.ReadStructArray<Vec2>();
+            TextureCoordinates = ds.ReadStructArray<Vec2>();
         }
 
         void IDataRW.WriteTo(DataStream ds) {
             ds.WriteStruct(UVBS);
-            ds.WriteStructArray(textureCoordinates);
+            ds.WriteStructArray(TextureCoordinates);
         }
     }
 }

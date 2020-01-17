@@ -1,39 +1,39 @@
 ﻿namespace FastMDX {
     public struct CollisionShape : IDataRW {
-        public Node node;
-        public uint type;
-        public Vec3 vertices1, vertices2;
-        public float radius;
+        public Node Node;
+        public uint Type;
+        public Vec3 Vertices1, Vertices2;
+        public float Radius;
 
         void IDataRW.ReadFrom(DataStream ds) {
-            ds.ReadData(ref node);
-            ds.ReadStruct(ref type);
+            ds.ReadData(ref Node);
+            ds.ReadStruct(ref Type);
 
-            if(type > 3)
+            if(Type > 3)
                 throw new ParsingException();
 
-            ds.ReadStruct(ref vertices1);
+            ds.ReadStruct(ref Vertices1);
 
-            if(type != 2)
-                ds.ReadStruct(ref vertices2);
+            if(Type != 2)
+                ds.ReadStruct(ref Vertices2);
 
-            if(type > 1)
-                ds.ReadStruct(ref radius);
+            if(Type > 1)
+                ds.ReadStruct(ref Radius);
         }
 
         void IDataRW.WriteTo(DataStream ds) {
-            if(type > 3)
+            if(Type > 3)
                 throw new ParsingException();
 
-            ds.WriteData(ref node);
-            ds.WriteStruct(type);
-            ds.WriteStruct(ref vertices1);
+            ds.WriteData(ref Node);
+            ds.WriteStruct(Type);
+            ds.WriteStruct(ref Vertices1);
 
-            if(type != 2)
-                ds.WriteStruct(ref vertices2);
+            if(Type != 2)
+                ds.WriteStruct(ref Vertices2);
 
-            if(type > 1)
-                ds.WriteStruct(radius);
+            if(Type > 1)
+                ds.WriteStruct(Radius);
         }
     }
 }
