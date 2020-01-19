@@ -40,7 +40,7 @@ namespace FastMDX {
 
         internal void Skip(uint count) => memory.current += count;
 
-        unsafe void CheckReadBounds(uint count) {
+        internal unsafe void CheckReadBounds(uint count) {
             if(memory.current + count > memory.end)
                 throw new ParsingException();
         }

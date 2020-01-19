@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -22,7 +22,7 @@ namespace FastMDX {
 
         public MDX(Stream stream, uint fileSize) => LoadFrom(stream, fileSize);
 
-        public unsafe void LoadFrom(Stream stream, long fileSize) {
+        unsafe void LoadFrom(Stream stream, long fileSize) {
             if(fileSize > int.MaxValue)
                 throw new Exception("File is too large!");
 
@@ -44,6 +44,7 @@ namespace FastMDX {
 
             while(ds.Offset < ds.Size) {
                 var blockHeader = ds.ReadStruct<BlockHeader>();
+                ds.CheckReadBounds(blockHeader.size);
 
                 _knownParsers.TryGetValue(blockHeader.tag, out var parser);
 
