@@ -7,8 +7,8 @@ namespace FastMDX {
 
     public unsafe struct GeosetAnimation : IDataRW {
         public LocalProperties Properties;
-        public Transform<float> GeosetAlpha;
-        public Transform<Vec4> GeosetColor;
+        public Transform<float> GeosetAlphaTransform;
+        public Transform<Color> GeosetColorTransform;
 
         void IDataRW.ReadFrom(DataStream ds) {
             var end = ds.Offset + ds.ReadStruct<uint>();
@@ -25,8 +25,8 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KGAO] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.GeosetAlpha),
-            [KGAC] = new OptionalBlockParser<Transform<Vec4>, LT>((ref LT p) => ref p.GeosetColor),
+            [KGAO] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.GeosetAlphaTransform),
+            [KGAC] = new OptionalBlockParser<Transform<Color>, LT>((ref LT p) => ref p.GeosetColorTransform),
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
