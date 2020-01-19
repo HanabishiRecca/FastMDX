@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -8,8 +8,6 @@ namespace FastMDX {
 
     public partial class MDX {
         const uint VERSION = 800u;
-
-        public BinaryBlock[] UnknownBlocks;
 
         public MDX() { }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using FastMDX;
 
@@ -10,8 +9,6 @@ static class Program {
     // =======================================================
 
     static void Main(string[] args) {
-        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-
         if(!(args?.Length > 0)) {
             Console.WriteLine("Pass a model file path as an argument to start the test");
             return;

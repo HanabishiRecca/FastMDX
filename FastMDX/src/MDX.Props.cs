@@ -44,6 +44,8 @@
             [CAMS] = new DataArrayParser<Camera>(mdx => ref mdx.Cameras),
             [CLID] = new DataArrayParser<CollisionShape>(mdx => ref mdx.CollisionShapes),
         };
+
+        public BinaryBlock[] UnknownBlocks;
     }
 
     interface IBlockParser {
