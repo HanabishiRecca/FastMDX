@@ -23,7 +23,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Optimize>false</Optimize>
         <PlatformTarget>x64</PlatformTarget>
-        <DebugType>full</DebugType>
+        <DebugType>portable</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <OutputPath>./bin/</OutputPath>
         <DefineConstants>TRACE;DEBUG</DefineConstants>
