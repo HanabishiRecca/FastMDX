@@ -1,8 +1,6 @@
-﻿using LT = FastMDX.TextureAnimation;
-
-namespace FastMDX {
+﻿namespace FastMDX {
     using static OptionalBlocks;
-    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<TextureAnimation>>;
 
     public unsafe struct TextureAnimation : IDataRW {
         public Transform<Vec3> Translation, Scaling;
@@ -21,9 +19,9 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KTAT] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.Translation),
-            [KTAR] = new OptionalBlockParser<Transform<Vec4>, LT>((ref LT p) => ref p.Rotation),
-            [KTAS] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.Scaling),
+            [KTAT] = new OptionalBlockParser<Transform<Vec3>, TextureAnimation>((ref TextureAnimation p) => ref p.Translation),
+            [KTAR] = new OptionalBlockParser<Transform<Vec4>, TextureAnimation>((ref TextureAnimation p) => ref p.Rotation),
+            [KTAS] = new OptionalBlockParser<Transform<Vec3>, TextureAnimation>((ref TextureAnimation p) => ref p.Scaling),
         };
     }
 }

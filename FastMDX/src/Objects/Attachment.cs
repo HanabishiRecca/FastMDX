@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using LT = FastMDX.Attachment;
 
 namespace FastMDX {
     using static OptionalBlocks;
-    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<Attachment>>;
 
     public unsafe struct Attachment : IDataRW {
         public Node Node;
@@ -27,9 +26,9 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KATV] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.VisibilityTransform),
+            [KATV] = new OptionalBlockParser<Transform<float>, Attachment>((ref Attachment p) => ref p.VisibilityTransform),
         };
-        
+
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct LocalProperties {
             const uint PATH_LEN = 260;

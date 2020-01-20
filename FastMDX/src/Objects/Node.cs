@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using LT = FastMDX.Node;
 
 namespace FastMDX {
     using static OptionalBlocks;
-    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<Node>>;
 
     public unsafe struct Node : IDataRW {
         public LocalProperties Properties;
@@ -25,9 +24,9 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KGTR] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.Translation),
-            [KGRT] = new OptionalBlockParser<Transform<Vec4>, LT>((ref LT p) => ref p.Rotation),
-            [KGSC] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.Scaling),
+            [KGTR] = new OptionalBlockParser<Transform<Vec3>, Node>((ref Node p) => ref p.Translation),
+            [KGRT] = new OptionalBlockParser<Transform<Vec4>, Node>((ref Node p) => ref p.Rotation),
+            [KGSC] = new OptionalBlockParser<Transform<Vec3>, Node>((ref Node p) => ref p.Scaling),
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

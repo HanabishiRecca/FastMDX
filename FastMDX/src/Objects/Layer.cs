@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using LT = FastMDX.Layer;
 
 namespace FastMDX {
     using static OptionalBlocks;
-    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<Layer>>;
 
     public struct Layer : IDataRW {
         public LocalProperties Properties;
@@ -25,8 +24,8 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KMTF] = new OptionalBlockParser<Transform<int>, LT>((ref LT p) => ref p.MaterialTextureIdTransform),
-            [KMTA] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.MaterialAlphaTransform),
+            [KMTF] = new OptionalBlockParser<Transform<int>, Layer>((ref Layer p) => ref p.MaterialTextureIdTransform),
+            [KMTA] = new OptionalBlockParser<Transform<float>, Layer>((ref Layer p) => ref p.MaterialAlphaTransform),
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

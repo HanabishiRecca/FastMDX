@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using LT = FastMDX.ParticleEmitter;
 
 namespace FastMDX {
     using static OptionalBlocks;
-    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<ParticleEmitter>>;
 
     public unsafe struct ParticleEmitter : IDataRW {
         public Node Node;
@@ -27,13 +26,13 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KPEE] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.EmissionRateTransform),
-            [KPEG] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.GravityTransform),
-            [KPLN] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.LongitudeTransform),
-            [KPLT] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.LatitudeTransform),
-            [KPEL] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.LifespanTransform),
-            [KPES] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.SpeedTransform),
-            [KPEV] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.VisibilityTransform),
+            [KPEE] = new OptionalBlockParser<Transform<float>, ParticleEmitter>((ref ParticleEmitter p) => ref p.EmissionRateTransform),
+            [KPEG] = new OptionalBlockParser<Transform<float>, ParticleEmitter>((ref ParticleEmitter p) => ref p.GravityTransform),
+            [KPLN] = new OptionalBlockParser<Transform<float>, ParticleEmitter>((ref ParticleEmitter p) => ref p.LongitudeTransform),
+            [KPLT] = new OptionalBlockParser<Transform<float>, ParticleEmitter>((ref ParticleEmitter p) => ref p.LatitudeTransform),
+            [KPEL] = new OptionalBlockParser<Transform<float>, ParticleEmitter>((ref ParticleEmitter p) => ref p.LifespanTransform),
+            [KPES] = new OptionalBlockParser<Transform<float>, ParticleEmitter>((ref ParticleEmitter p) => ref p.SpeedTransform),
+            [KPEV] = new OptionalBlockParser<Transform<float>, ParticleEmitter>((ref ParticleEmitter p) => ref p.VisibilityTransform),
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using LT = FastMDX.GeosetAnimation;
 
 namespace FastMDX {
     using static OptionalBlocks;
-    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<GeosetAnimation>>;
 
     public unsafe struct GeosetAnimation : IDataRW {
         public LocalProperties Properties;
@@ -25,8 +24,8 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KGAO] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.GeosetAlphaTransform),
-            [KGAC] = new OptionalBlockParser<Transform<Color>, LT>((ref LT p) => ref p.GeosetColorTransform),
+            [KGAO] = new OptionalBlockParser<Transform<float>, GeosetAnimation>((ref GeosetAnimation p) => ref p.GeosetAlphaTransform),
+            [KGAC] = new OptionalBlockParser<Transform<Color>, GeosetAnimation>((ref GeosetAnimation p) => ref p.GeosetColorTransform),
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

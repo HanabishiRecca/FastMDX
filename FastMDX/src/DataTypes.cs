@@ -45,7 +45,7 @@ namespace FastMDX {
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TrackInter<T> where T : unmanaged {
-        public int frame;
+        public int Frame;
         public T Value, ValueIn, ValueOut;
     }
 }

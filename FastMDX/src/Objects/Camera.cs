@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using LT = FastMDX.Camera;
 
 namespace FastMDX {
     using static OptionalBlocks;
-    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<Camera>>;
 
     public unsafe struct Camera : IDataRW {
         public LocalProperties Properties;
@@ -25,9 +24,9 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KCTR] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.Translation),
-            [KCRL] = new OptionalBlockParser<Transform<uint>, LT>((ref LT p) => ref p.Rotation),
-            [KTTR] = new OptionalBlockParser<Transform<Vec3>, LT>((ref LT p) => ref p.TargetTranslation),
+            [KCTR] = new OptionalBlockParser<Transform<Vec3>, Camera>((ref Camera p) => ref p.Translation),
+            [KCRL] = new OptionalBlockParser<Transform<uint>, Camera>((ref Camera p) => ref p.Rotation),
+            [KTTR] = new OptionalBlockParser<Transform<Vec3>, Camera>((ref Camera p) => ref p.TargetTranslation),
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

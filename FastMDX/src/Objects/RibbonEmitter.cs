@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using LT = FastMDX.RibbonEmitter;
 
 namespace FastMDX {
     using static OptionalBlocks;
-    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<RibbonEmitter>>;
 
     public unsafe struct RibbonEmitter : IDataRW {
         public Node Node;
@@ -27,12 +26,12 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KRVS] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.VisibilityTransform),
-            [KRHA] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.HeightAboveTransform),
-            [KRHB] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.HeightBelowTransform),
-            [KRAL] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.AlphaTransform),
-            [KRCO] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.ColorTransform),
-            [KRTX] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.TextureSlotTransform),
+            [KRVS] = new OptionalBlockParser<Transform<float>, RibbonEmitter>((ref RibbonEmitter p) => ref p.VisibilityTransform),
+            [KRHA] = new OptionalBlockParser<Transform<float>, RibbonEmitter>((ref RibbonEmitter p) => ref p.HeightAboveTransform),
+            [KRHB] = new OptionalBlockParser<Transform<float>, RibbonEmitter>((ref RibbonEmitter p) => ref p.HeightBelowTransform),
+            [KRAL] = new OptionalBlockParser<Transform<float>, RibbonEmitter>((ref RibbonEmitter p) => ref p.AlphaTransform),
+            [KRCO] = new OptionalBlockParser<Transform<float>, RibbonEmitter>((ref RibbonEmitter p) => ref p.ColorTransform),
+            [KRTX] = new OptionalBlockParser<Transform<float>, RibbonEmitter>((ref RibbonEmitter p) => ref p.TextureSlotTransform),
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

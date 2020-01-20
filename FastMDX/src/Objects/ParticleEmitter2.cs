@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using LT = FastMDX.ParticleEmitter2;
 
 namespace FastMDX {
     using static OptionalBlocks;
-    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<LT>>;
+    using Transforms = System.Collections.Generic.Dictionary<OptionalBlocks, IOptionalBlocksParser<ParticleEmitter2>>;
 
     public unsafe struct ParticleEmitter2 : IDataRW {
         public Node Node;
@@ -27,14 +26,14 @@ namespace FastMDX {
         }
 
         static readonly Transforms _knownTransforms = new Transforms {
-            [KP2E] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.EmissionRateTransform),
-            [KP2G] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.GravityTransform),
-            [KP2L] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.LatitudeTransform),
-            [KP2S] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.SpeedTransform),
-            [KP2V] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.VisibilityTransform),
-            [KP2R] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.VariationTransform),
-            [KP2N] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.LengthTransform),
-            [KP2W] = new OptionalBlockParser<Transform<float>, LT>((ref LT p) => ref p.WidthTransform),
+            [KP2E] = new OptionalBlockParser<Transform<float>, ParticleEmitter2>((ref ParticleEmitter2 p) => ref p.EmissionRateTransform),
+            [KP2G] = new OptionalBlockParser<Transform<float>, ParticleEmitter2>((ref ParticleEmitter2 p) => ref p.GravityTransform),
+            [KP2L] = new OptionalBlockParser<Transform<float>, ParticleEmitter2>((ref ParticleEmitter2 p) => ref p.LatitudeTransform),
+            [KP2S] = new OptionalBlockParser<Transform<float>, ParticleEmitter2>((ref ParticleEmitter2 p) => ref p.SpeedTransform),
+            [KP2V] = new OptionalBlockParser<Transform<float>, ParticleEmitter2>((ref ParticleEmitter2 p) => ref p.VisibilityTransform),
+            [KP2R] = new OptionalBlockParser<Transform<float>, ParticleEmitter2>((ref ParticleEmitter2 p) => ref p.VariationTransform),
+            [KP2N] = new OptionalBlockParser<Transform<float>, ParticleEmitter2>((ref ParticleEmitter2 p) => ref p.LengthTransform),
+            [KP2W] = new OptionalBlockParser<Transform<float>, ParticleEmitter2>((ref ParticleEmitter2 p) => ref p.WidthTransform),
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
