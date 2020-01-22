@@ -39,12 +39,18 @@ namespace FastMDX {
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct LocalProperties {
-            public uint Type;
+            public Type Type;
             public float AttenuationStart, AttenuationEnd;
             public Color Color;
             public float Intensity;
             public Color AmbientColor;
             public float AmbientIntensity;
+        }
+
+        public enum Type : uint {
+            Omni,
+            Directional,
+            Ambient,
         }
     }
 }

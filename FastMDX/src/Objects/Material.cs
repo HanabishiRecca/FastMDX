@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace FastMDX {
     using static InnerBlocks;
@@ -26,7 +27,16 @@ namespace FastMDX {
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct LocalProperties {
-            public uint PriorityPlane, Flags;
+            public uint PriorityPlane;
+            public Flags Flags;
+        }
+        
+        [Flags]
+        public enum Flags : uint {
+            None = 0x0,
+            ConstantColor = 0x1,
+            SortPrimitivesFarZ = 0x10,
+            FullResolution = 0x20,
         }
     }
 }

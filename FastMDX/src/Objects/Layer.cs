@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace FastMDX {
     using static OptionalBlocks;
@@ -30,9 +31,30 @@ namespace FastMDX {
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct LocalProperties {
-            public uint FilterMode, ShadingFlags;
+            public FilterMode FilterMode;
+            public ShadingFlags ShadingFlags;
             public int TextureId, TextureAnimationId, CoordId;
             public float Alpha;
+        }
+
+        public enum FilterMode : uint {
+            None,
+            Transparent,
+            Blend,
+            Additive,
+            AddAlpha,
+            Modulate,
+            Modulate2x,
+        }
+
+        [Flags]
+        public enum ShadingFlags : uint {
+            Unshaded = 0x1,
+            SphereEnvironmentMap = 0x2,
+            TwoSided = 0x10,
+            Unfogged = 0x20,
+            NoDepthTest = 0x40,
+            NoDepthSet = 0x80,
         }
     }
 }

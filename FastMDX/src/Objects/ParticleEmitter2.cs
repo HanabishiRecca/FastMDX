@@ -39,14 +39,17 @@ namespace FastMDX {
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct LocalProperties {
             public float Speed, Variation, Latitude, Gravity, Lifespan, EmissionRate, Length, Width;
-            public uint FilterMode, Rows, Columns, Flag;
+            public FilterMode FilterMode;
+            public uint Rows, Columns;
+            public HeadTailType HeadTailType;
             public float TailLength, Time;
             public SegmentColor SegmentColor;
             public SegmentAlpha SegmentAlpha;
             public Vec3 SegmentScaling;
             public Interval HeadInterval, HeadDecayInterval, TailInterval, TailDecayInterval;
             public int TextureId;
-            public uint Squirt, PriorityPlane;
+            public Squirt Squirt;
+            public uint PriorityPlane;
             public int ReplaceableId;
         }
 
@@ -63,6 +66,25 @@ namespace FastMDX {
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Interval {
             public uint Start, End, Repeat;
+        }
+
+        public enum FilterMode : uint {
+            Blend,
+            Additive,
+            Modulate,
+            Modulate2x,
+            AddAlpha,
+        }
+
+        public enum HeadTailType : uint {
+            Head,
+            Tail,
+            Both,
+        }
+
+        public enum Squirt : uint {
+            NoSquirt,
+            Squirt,
         }
     }
 }

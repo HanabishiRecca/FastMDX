@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace FastMDX {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -7,7 +8,7 @@ namespace FastMDX {
 
         public int ReplaceableId;
         fixed byte name[(int)NAME_LEN];
-        public uint Flags;
+        public WrapFlags Flags;
 
         public string Name {
             get {
@@ -18,6 +19,13 @@ namespace FastMDX {
                 fixed(byte* n = name)
                     BinaryString.Encode(value, n, NAME_LEN);
             }
+        }
+
+        [Flags]
+        public enum WrapFlags : uint {
+            None = 0x0,
+            WrapWidth = 0x1,
+            WrapHeight = 0x2,
         }
     }
 }

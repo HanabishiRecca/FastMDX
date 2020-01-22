@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace FastMDX {
     using static OptionalBlocks;
@@ -31,9 +32,16 @@ namespace FastMDX {
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct LocalProperties {
             public float Alpha;
-            public uint Flags;
+            public Flags Flags;
             public Color Color;
             public int GeosetId;
+        }
+
+        [Flags]
+        public enum Flags : uint {
+            None = 0x0,
+            DropShadow = 0x1,
+            Color = 0x2,
         }
     }
 }

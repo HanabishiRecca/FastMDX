@@ -5,7 +5,8 @@ namespace FastMDX {
 
     public struct Geoset : IDataRW {
         public Vec3[] VertexPositions, VertexNormals;
-        public uint[] FaceTypeGroups, FaceGroups, MatrixGroups, MatrixIndices;
+        public FaceTypeGroup[] FaceTypeGroups;
+        public uint[] FaceGroups, MatrixGroups, MatrixIndices;
         public ushort[] Faces;
         public byte[] VertexGroups;
         public LocalProperties Properties;
@@ -22,7 +23,7 @@ namespace FastMDX {
             VertexNormals = ds.ReadStructArray<Vec3>();
 
             ds.CheckTag(PTYP);
-            FaceTypeGroups = ds.ReadStructArray<uint>();
+            FaceTypeGroups = ds.ReadStructArray<FaceTypeGroup>();
 
             ds.CheckTag(PCNT);
             FaceGroups = ds.ReadStructArray<uint>();
@@ -88,8 +89,27 @@ namespace FastMDX {
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct LocalProperties {
             public int MaterialId;
-            public uint SelectionGroup, SelectionFlags;
+            public uint SelectionGroup;
+            public SelectionType SelectionType;
             public Extent Extent;
+        }
+
+        public enum FaceTypeGroup : uint {
+            Points,
+            Lines,
+            LineLoop,
+            LineStrip,
+            Triangles,
+            TriangleStrip,
+            TriangleFan,
+            Quads,
+            QuadStrip,
+            Polygons,
+        }
+
+        public enum SelectionType : uint {
+            None,
+            Unselectable = 4,
         }
     }
 }

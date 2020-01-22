@@ -8,7 +8,7 @@ namespace FastMDX {
         fixed byte name[(int)NAME_LEN];
         public uint IntervalStart, IntervalEnd;
         public float MoveSpeed;
-        public uint Flags;
+        public LoopType Type;
         public float Rarity;
         public uint SyncPoint;
         public Extent Extent;
@@ -22,6 +22,11 @@ namespace FastMDX {
                 fixed(byte* n = name)
                     BinaryString.Encode(value, n, NAME_LEN);
             }
+        }
+
+        public enum LoopType : uint {
+            Looping,
+            NonLooping,
         }
     }
 }
